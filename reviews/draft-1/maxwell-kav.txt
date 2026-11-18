@@ -1,0 +1,56 @@
+﻿Good report but the business model needs improvements
+---
+INSTRUCTIONS:
+- Skim read the assigned report
+- Consider the criteria & questions below
+- Write constructive assessment and feedback for each question, e.g. what
+is good, what is missing / hard to understand, what can be improved.
+OVERALL
+1. General impression of report: professional, organised, confidence
+inspiring etc?
+Answer:  My general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.
+2. Language: clarity, ease of understanding, e.g. what is the problem &
+the solution?
+Answer: I think the problem (event planning in existing apps is clunky) and the proposed solution (a dedicated event app for private/public events) are clearly communicated.
+BUSINESS MODEL
+3. Consider the description of the business model. Does it describe the
+user/customer perspective? How is MOM test used to motivate the
+targeted problem?
+Answer: The report explains the customer perspective well and uses the results from the Mom Test they conducted to confirm that students struggle with messy and finding venues.  
+4. Consider the novelty of the business idea. Is the product/service new
+or are you aware of comparable solutions?
+Answer: No, the idea is not completely new; apps like Partiful and Luma already solve the friction-free invitation problem. However, this venture combines private event invitations with venue booking which make it stand out more. The report should acknowledge these competitors and not only compare itself to platforms like Facebook event and Orbi.
+5. Consider the competitiveness of the product/service. How superior is
+the solution compared to other alternatives? How easy is it for others
+to copy the business model (and thereby further increase competition)?
+Answer: The main advantage I can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which I think is very easy for competitors to copy.
+6. How will money be earned on the product/service? Is the revenue model
+realistic?
+Answer: As I understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. While I understand the idea I can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.
+7. How well does the business model fit the product/service?
+Answer: I think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .
+8. Is it clear where venture capital will come from? Realistic?
+Answer: I can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live. 
+9. Consider the team behind the business. How well is the competence and
+strengths of the team described? Are any vital competences missing
+(that ought to be recruited)? How well is the extent and type of
+contribution described for each team member (number of hours, type of
+activities and contributions)?
+Answer: The team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).I can see in the appendix A.3 lists everyone's hours, I can also see that some members provide much more specific task breakdowns than others.
+10. What are the chances that this team will succeed?
+Answer: I think with their strong tech skills and Lund student network give them a solid shot at building a local prototype, but commercial success is moderate.
+MARKET ANALYSIS
+11. Is it clear which customers that are likely to buy the
+product/service?
+Answer: The report seems to identify venues, student organizations, and advertisers as paying clients. But something I find unclear is if the free users (the students who use the app to go to events) are customers? A solution might be to clearly separate the free and paying customers.
+12. What kind of competitors have been identified? Can you think of other
+and/or more relevant competitors?
+Answer: I think they have correctly identified local student platforms like Orbi, Hitract, and Stuk alongside Facebook Events and Ticketmaster. Some more relevant competitors are Partiful and Luma which already solve the friction-free invitation problem.
+13. Consider the motivation of the product-market fit. What aspects need
+to be validated through prototyping?
+Answer: I think the product-market is fitting and is mostly motivated by personal experience and Mom Test interviews. Through prototyping, they can validate whether guests will actually download a new app.
+14. Is the initially targeted market (early adopters) realistic?
+Answer: Yes the initially target market (student in universities) is realistic, since Lund university has around 41000 enrolled students.
+15. How trustworthy is the market channel (distribution, customer reach
+out)?
+Answer: I think that campus word of mouth, hosting their own events, and partnering with student organizations are trustworthy,it is a low-cost way to reach Lund students.

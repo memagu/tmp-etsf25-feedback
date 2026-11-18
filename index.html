@@ -93,7 +93,16 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
   border-bottom:1px solid var(--line-strong);
 }
 .tabbar-inner{display:flex;align-items:stretch;justify-content:space-between;gap:18px}
-.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.rounds{display:flex;align-items:center;gap:3px;padding-right:10px;flex:0 0 auto}
+.round-btn{
+  appearance:none;border:0;background:none;border-radius:999px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);padding:6px 10px;cursor:pointer;white-space:nowrap;transition:.16s ease;
+}
+.round-btn:hover{color:var(--ink)}
+.round-btn[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tab-divider{width:1px;height:20px;background:var(--line-strong);align-self:center;margin-right:6px;flex:0 0 auto}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto}
 .tabs::-webkit-scrollbar{display:none}
 .doc-tab{
   appearance:none;background:none;border:0;border-bottom:2px solid transparent;
@@ -195,7 +204,7 @@ main{max-width:760px;width:100%}
   box-shadow:inset 0 -0.5em 0 rgba(194,149,79,.2);
   -webkit-box-decoration-break:clone;box-decoration-break:clone;
 }
-.qa[hidden],.section[hidden],.doc[hidden],.toc-list[hidden]{display:none}
+.qa[hidden],.section[hidden],.doc[hidden],.toc-list[hidden],.doc-tab[hidden]{display:none}
 
 /* Document summary */
 .doc-summary{
@@ -249,6 +258,9 @@ main{max-width:760px;width:100%}
   .layout{padding-bottom:56px}
   .doc-tab{padding:14px 9px 12px;font-size:12.5px}
   .doc-tab .tab-count{display:none}
+  .rounds{padding-right:2px;gap:1px}
+  .round-btn{font-size:9px;padding:5px 7px}
+  .tab-divider{margin-right:0}
   .tab-label .full{display:none}
   .tab-label .mini{display:inline}
   .print-btn span{display:none}
@@ -289,7 +301,7 @@ main{max-width:760px;width:100%}
     <div class="chips">
       <span class="chip accent">3 files</span>
       <span class="chip">45 answers</span>
-      <span class="chip">~2,774 words</span>
+      <span class="chip">~2,577 words</span>
       <span class="chip">Press <code>/</code> to search</span>
     </div>
   </div>
@@ -297,10 +309,11 @@ main{max-width:760px;width:100%}
 
 <div class="tabbar">
   <div class="wrap tabbar-inner">
+      
     <div class="tabs" role="tablist" aria-label="Documents">
-      <button class="doc-tab" id="tab-johannes-persson" role="tab" aria-controls="doc-johannes-persson" aria-selected="false" data-target="johannes-persson"><span class="tab-num">01</span><span class="tab-label"><span class="full">Johannes Persson</span><span class="mini">Johannes</span></span><span class="tab-count">15</span></button>
-<button class="doc-tab" id="tab-maxwell-kav" role="tab" aria-controls="doc-maxwell-kav" aria-selected="false" data-target="maxwell-kav"><span class="tab-num">02</span><span class="tab-label"><span class="full">Maxwell Kav</span><span class="mini">Maxwell</span></span><span class="tab-count">15</span></button>
-<button class="doc-tab" id="tab-valdemar-rasmusson" role="tab" aria-controls="doc-valdemar-rasmusson" aria-selected="false" data-target="valdemar-rasmusson"><span class="tab-num">03</span><span class="tab-label"><span class="full">Valdemar Rasmusson</span><span class="mini">Valdemar</span></span><span class="tab-count">15</span></button>
+      <button class="doc-tab" id="tab-draft-1-johannes-persson" role="tab" aria-controls="doc-draft-1-johannes-persson" aria-selected="false" data-target="draft-1-johannes-persson" data-round="draft-1"><span class="tab-num">01</span><span class="tab-label"><span class="full">Johannes Persson</span><span class="mini">Johannes</span></span><span class="tab-count">15</span></button>
+<button class="doc-tab" id="tab-draft-1-maxwell-kav" role="tab" aria-controls="doc-draft-1-maxwell-kav" aria-selected="false" data-target="draft-1-maxwell-kav" data-round="draft-1"><span class="tab-num">02</span><span class="tab-label"><span class="full">Maxwell Kav</span><span class="mini">Maxwell</span></span><span class="tab-count">15</span></button>
+<button class="doc-tab" id="tab-draft-1-valdemar-rasmusson" role="tab" aria-controls="doc-draft-1-valdemar-rasmusson" aria-selected="false" data-target="draft-1-valdemar-rasmusson" data-round="draft-1"><span class="tab-num">03</span><span class="tab-label"><span class="full">Valdemar Rasmusson</span><span class="mini">Valdemar</span></span><span class="tab-count">15</span></button>
     </div>
     <button class="print-btn" type="button" aria-label="Print or save as PDF">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -319,28 +332,28 @@ main{max-width:760px;width:100%}
     <p class="result-count" id="resultCount" aria-live="polite"></p>
     <div class="toc">
       <p class="toc-label">In this document</p>
-      <nav class="toc-list" data-doc="johannes-persson" aria-label="Sections of Peer review by Johannes Persson" hidden>
-<a class="toc-link" href="#johannes-persson-overall" data-section="johannes-persson-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
-<a class="toc-link" href="#johannes-persson-business-model" data-section="johannes-persson-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
-<a class="toc-link" href="#johannes-persson-market-analysis" data-section="johannes-persson-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
+      <nav class="toc-list" data-doc="draft-1-johannes-persson" aria-label="Sections of Peer review by Johannes Persson" hidden>
+<a class="toc-link" href="#draft-1-johannes-persson-overall" data-section="draft-1-johannes-persson-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
+<a class="toc-link" href="#draft-1-johannes-persson-business-model" data-section="draft-1-johannes-persson-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
+<a class="toc-link" href="#draft-1-johannes-persson-market-analysis" data-section="draft-1-johannes-persson-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
 </nav>
-<nav class="toc-list" data-doc="maxwell-kav" aria-label="Sections of Peer review by Maxwell Kav" hidden>
-<a class="toc-link" href="#maxwell-kav-overall" data-section="maxwell-kav-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
-<a class="toc-link" href="#maxwell-kav-business-model" data-section="maxwell-kav-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
-<a class="toc-link" href="#maxwell-kav-market-analysis" data-section="maxwell-kav-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
+<nav class="toc-list" data-doc="draft-1-maxwell-kav" aria-label="Sections of Peer review by Maxwell Kav" hidden>
+<a class="toc-link" href="#draft-1-maxwell-kav-overall" data-section="draft-1-maxwell-kav-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
+<a class="toc-link" href="#draft-1-maxwell-kav-business-model" data-section="draft-1-maxwell-kav-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
+<a class="toc-link" href="#draft-1-maxwell-kav-market-analysis" data-section="draft-1-maxwell-kav-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
 </nav>
-<nav class="toc-list" data-doc="valdemar-rasmusson" aria-label="Sections of Peer review by Valdemar Rasmusson" hidden>
-<a class="toc-link" href="#valdemar-rasmusson-overall" data-section="valdemar-rasmusson-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
-<a class="toc-link" href="#valdemar-rasmusson-business-model" data-section="valdemar-rasmusson-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
-<a class="toc-link" href="#valdemar-rasmusson-market-analysis" data-section="valdemar-rasmusson-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
+<nav class="toc-list" data-doc="draft-1-valdemar-rasmusson" aria-label="Sections of Peer review by Valdemar Rasmusson" hidden>
+<a class="toc-link" href="#draft-1-valdemar-rasmusson-overall" data-section="draft-1-valdemar-rasmusson-overall"><span class="toc-name">Overall</span><span class="toc-range">1–2</span></a>
+<a class="toc-link" href="#draft-1-valdemar-rasmusson-business-model" data-section="draft-1-valdemar-rasmusson-business-model"><span class="toc-name">Business model</span><span class="toc-range">3–10</span></a>
+<a class="toc-link" href="#draft-1-valdemar-rasmusson-market-analysis" data-section="draft-1-valdemar-rasmusson-market-analysis"><span class="toc-name">Market analysis</span><span class="toc-range">11–15</span></a>
 </nav>
     </div>
     <p class="side-note">Generated from the original <code>.txt</code> files. Text is unchanged — only the presentation is new.</p>
   </aside>
   <main>
-    <section class="doc" id="doc-johannes-persson" data-doc="johannes-persson" role="tabpanel" aria-labelledby="tab-johannes-persson" hidden>
+    <section class="doc" id="doc-draft-1-johannes-persson" data-doc="draft-1-johannes-persson" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-johannes-persson" hidden>
 <div class="doc-head">
-<p class="doc-kicker">Document 01</p>
+<p class="doc-kicker">Draft 1 · Document 01</p>
 <h2>Peer review by Johannes Persson</h2>
 <div class="doc-meta">
 <code>johannes-persson.txt</code><span>15 answers</span><span>~799 words</span>
@@ -351,7 +364,7 @@ main{max-width:760px;width:100%}
 <p class="summary-label">Reviewer’s summary</p>
 <p class="summary-text">I think your draft1 is a good starting point with an interesting business idea, and with some small change to your business model. It will become much better! Good work!</p>
 </div>
-<section class="section" id="johannes-persson-instructions" data-title="Instructions">
+<section class="section" id="draft-1-johannes-persson-instructions" data-title="Instructions">
 <div class="callout">
 <p class="callout-label">Instructions for the reviewer</p>
 <ul>
@@ -360,12 +373,12 @@ main{max-width:760px;width:100%}
 <li>Write constructive assessment and feedback for each question, e.g. what is good, what is missing / hard to understand, what can be improved.</li>
 </ul></div>
 </section>
-<section class="section" id="johannes-persson-overall" data-title="Overall">
+<section class="section" id="draft-1-johannes-persson-overall" data-title="Overall">
 <div class="section-head">
 <h2>Overall</h2>
 <span class="section-range">Q1–2</span>
 </div>
-<article class="qa" id="johannes-persson-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? my general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.">
+<article class="qa" id="draft-1-johannes-persson-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? my general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.">
 <div class="qa-q">
 <span class="num">01</span>
 <h3>General impression of report: professional, organised, confidence inspiring etc?</h3>
@@ -374,7 +387,7 @@ main{max-width:760px;width:100%}
 <p>My general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? i think the problem (event planning in existing apps is clunky) and the proposed solution (a dedicated event app for private/public events) are clearly communicated.">
+<article class="qa" id="draft-1-johannes-persson-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? i think the problem (event planning in existing apps is clunky) and the proposed solution (a dedicated event app for private/public events) are clearly communicated.">
 <div class="qa-q">
 <span class="num">02</span>
 <h3>Language: clarity, ease of understanding, e.g. what is the problem &amp; the solution?</h3>
@@ -384,12 +397,12 @@ main{max-width:760px;width:100%}
 </div>
 </article>
 </section>
-<section class="section" id="johannes-persson-business-model" data-title="Business model">
+<section class="section" id="draft-1-johannes-persson-business-model" data-title="Business model">
 <div class="section-head">
 <h2>Business model</h2>
 <span class="section-range">Q3–10</span>
 </div>
-<article class="qa" id="johannes-persson-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? the report explains the customer perspective well and uses the results from the mom test they conducted to confirm that students struggle with messy and finding venues.">
+<article class="qa" id="draft-1-johannes-persson-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? the report explains the customer perspective well and uses the results from the mom test they conducted to confirm that students struggle with messy and finding venues.">
 <div class="qa-q">
 <span class="num">03</span>
 <h3>Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?</h3>
@@ -398,7 +411,7 @@ main{max-width:760px;width:100%}
 <p>The report explains the customer perspective well and uses the results from the Mom Test they conducted to confirm that students struggle with messy and finding venues.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? no, the idea is not completely new; apps like partiful and luma already solve the friction-free invitation problem. however, this venture combines private event invitations with venue booking which make it stand out more. the report should acknowledge these competitors and not only compare itself to platforms like facebook event and orbi.">
+<article class="qa" id="draft-1-johannes-persson-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? no, the idea is not completely new; apps like partiful and luma already solve the friction-free invitation problem. however, this venture combines private event invitations with venue booking which make it stand out more. the report should acknowledge these competitors and not only compare itself to platforms like facebook event and orbi.">
 <div class="qa-q">
 <span class="num">04</span>
 <h3>Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions?</h3>
@@ -407,7 +420,7 @@ main{max-width:760px;width:100%}
 <p>No, the idea is not completely new; apps like Partiful and Luma already solve the friction-free invitation problem. However, this venture combines private event invitations with venue booking which make it stand out more. The report should acknowledge these competitors and not only compare itself to platforms like Facebook event and Orbi.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? the main advantage i can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which i think is very easy for competitors to copy.">
+<article class="qa" id="draft-1-johannes-persson-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? the main advantage i can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which i think is very easy for competitors to copy.">
 <div class="qa-q">
 <span class="num">05</span>
 <h3>Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?</h3>
@@ -416,7 +429,7 @@ main{max-width:760px;width:100%}
 <p>The main advantage I can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which I think is very easy for competitors to copy.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? as i understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. while i understand the idea i can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.">
+<article class="qa" id="draft-1-johannes-persson-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? as i understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. while i understand the idea i can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.">
 <div class="qa-q">
 <span class="num">06</span>
 <h3>How will money be earned on the product/service? Is the revenue model realistic?</h3>
@@ -425,7 +438,7 @@ main{max-width:760px;width:100%}
 <p>As I understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. While I understand the idea I can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q7" data-search="how well does the business model fit the product/service? i think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .">
+<article class="qa" id="draft-1-johannes-persson-q7" data-search="how well does the business model fit the product/service? i think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .">
 <div class="qa-q">
 <span class="num">07</span>
 <h3>How well does the business model fit the product/service?</h3>
@@ -434,7 +447,7 @@ main{max-width:760px;width:100%}
 <p>I think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q8" data-search="is it clear where venture capital will come from? realistic? i can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live.">
+<article class="qa" id="draft-1-johannes-persson-q8" data-search="is it clear where venture capital will come from? realistic? i can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live.">
 <div class="qa-q">
 <span class="num">08</span>
 <h3>Is it clear where venture capital will come from? Realistic?</h3>
@@ -443,7 +456,7 @@ main{max-width:760px;width:100%}
 <p>I can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? the team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).i can see in the appendix a.3 lists everyone&#x27;s hours, i can also see that some members provide much more specific task breakdowns than others.">
+<article class="qa" id="draft-1-johannes-persson-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? the team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).i can see in the appendix a.3 lists everyone&#x27;s hours, i can also see that some members provide much more specific task breakdowns than others.">
 <div class="qa-q">
 <span class="num">09</span>
 <h3>Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?</h3>
@@ -452,7 +465,7 @@ main{max-width:760px;width:100%}
 <p>The team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).I can see in the appendix A.3 lists everyone&#x27;s hours, I can also see that some members provide much more specific task breakdowns than others.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q10" data-search="what are the chances that this team will succeed? i think with their strong tech skills and lund student network give them a solid shot at building a local prototype, but commercial success is moderate.">
+<article class="qa" id="draft-1-johannes-persson-q10" data-search="what are the chances that this team will succeed? i think with their strong tech skills and lund student network give them a solid shot at building a local prototype, but commercial success is moderate.">
 <div class="qa-q">
 <span class="num">10</span>
 <h3>What are the chances that this team will succeed?</h3>
@@ -462,12 +475,12 @@ main{max-width:760px;width:100%}
 </div>
 </article>
 </section>
-<section class="section" id="johannes-persson-market-analysis" data-title="Market analysis">
+<section class="section" id="draft-1-johannes-persson-market-analysis" data-title="Market analysis">
 <div class="section-head">
 <h2>Market analysis</h2>
 <span class="section-range">Q11–15</span>
 </div>
-<article class="qa" id="johannes-persson-q11" data-search="is it clear which customers that are likely to buy the product/service? the report seems to identify venues, student organizations, and advertisers as paying clients. but something i find unclear is if the free users (the students who use the app to go to events) are customers? a solution might be to clearly separate the free and paying customers.">
+<article class="qa" id="draft-1-johannes-persson-q11" data-search="is it clear which customers that are likely to buy the product/service? the report seems to identify venues, student organizations, and advertisers as paying clients. but something i find unclear is if the free users (the students who use the app to go to events) are customers? a solution might be to clearly separate the free and paying customers.">
 <div class="qa-q">
 <span class="num">11</span>
 <h3>Is it clear which customers that are likely to buy the product/service?</h3>
@@ -476,7 +489,7 @@ main{max-width:760px;width:100%}
 <p>The report seems to identify venues, student organizations, and advertisers as paying clients. But something I find unclear is if the free users (the students who use the app to go to events) are customers? A solution might be to clearly separate the free and paying customers.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q12" data-search="what kind of competitors have been identified? can you think of other and/or more relevant competitors? i think they have correctly identified local student platforms like orbi, hitract, and stuk alongside facebook events and ticketmaster. some more relevant competitors are partiful and luma which already solve the friction-free invitation problem.">
+<article class="qa" id="draft-1-johannes-persson-q12" data-search="what kind of competitors have been identified? can you think of other and/or more relevant competitors? i think they have correctly identified local student platforms like orbi, hitract, and stuk alongside facebook events and ticketmaster. some more relevant competitors are partiful and luma which already solve the friction-free invitation problem.">
 <div class="qa-q">
 <span class="num">12</span>
 <h3>What kind of competitors have been identified? Can you think of other and/or more relevant competitors?</h3>
@@ -485,7 +498,7 @@ main{max-width:760px;width:100%}
 <p>I think they have correctly identified local student platforms like Orbi, Hitract, and Stuk alongside Facebook Events and Ticketmaster. Some more relevant competitors are Partiful and Luma which already solve the friction-free invitation problem.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? i think the product-market is fitting and is mostly motivated by personal experience and mom test interviews. through prototyping, they can validate whether guests will actually download a new app.">
+<article class="qa" id="draft-1-johannes-persson-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? i think the product-market is fitting and is mostly motivated by personal experience and mom test interviews. through prototyping, they can validate whether guests will actually download a new app.">
 <div class="qa-q">
 <span class="num">13</span>
 <h3>Consider the motivation of the product-market fit. What aspects need to be validated through prototyping?</h3>
@@ -494,7 +507,7 @@ main{max-width:760px;width:100%}
 <p>I think the product-market is fitting and is mostly motivated by personal experience and Mom Test interviews. Through prototyping, they can validate whether guests will actually download a new app.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q14" data-search="is the initially targeted market (early adopters) realistic? yes the initially target market (student in universities) is realistic, since lund university has around 41000 enrolled students.">
+<article class="qa" id="draft-1-johannes-persson-q14" data-search="is the initially targeted market (early adopters) realistic? yes the initially target market (student in universities) is realistic, since lund university has around 41000 enrolled students.">
 <div class="qa-q">
 <span class="num">14</span>
 <h3>Is the initially targeted market (early adopters) realistic?</h3>
@@ -503,7 +516,7 @@ main{max-width:760px;width:100%}
 <p>Yes the initially target market (student in universities) is realistic, since Lund university has around 41000 enrolled students.</p>
 </div>
 </article>
-<article class="qa" id="johannes-persson-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? i think that campus word of mouth, hosting their own events, and partnering with student organizations are trustworthy,it is a low-cost way to reach lund students.">
+<article class="qa" id="draft-1-johannes-persson-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? i think that campus word of mouth, hosting their own events, and partnering with student organizations are trustworthy,it is a low-cost way to reach lund students.">
 <div class="qa-q">
 <span class="num">15</span>
 <h3>How trustworthy is the market channel (distribution, customer reach out)?</h3>
@@ -514,12 +527,12 @@ main{max-width:760px;width:100%}
 </article>
 </section>
 </section>
-<section class="doc" id="doc-maxwell-kav" data-doc="maxwell-kav" role="tabpanel" aria-labelledby="tab-maxwell-kav" hidden>
+<section class="doc" id="doc-draft-1-maxwell-kav" data-doc="draft-1-maxwell-kav" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-maxwell-kav" hidden>
 <div class="doc-head">
-<p class="doc-kicker">Document 02</p>
+<p class="doc-kicker">Draft 1 · Document 02</p>
 <h2>Peer review by Maxwell Kav</h2>
 <div class="doc-meta">
-<code>maxwell-kav.txt</code><span>15 answers</span><span>~974 words</span>
+<code>maxwell-kav.txt</code><span>15 answers</span><span>~777 words</span>
 </div>
 <p class="doc-note">Review of the ETSF25 project draft.</p>
 </div>
@@ -527,163 +540,172 @@ main{max-width:760px;width:100%}
 <p class="summary-label">Reviewer’s summary</p>
 <p class="summary-text">Good report but the business model needs improvements</p>
 </div>
-<section class="section" id="maxwell-kav-overall" data-title="Overall">
+<section class="section" id="draft-1-maxwell-kav-instructions" data-title="Instructions">
+<div class="callout">
+<p class="callout-label">Instructions for the reviewer</p>
+<ul>
+<li>Skim read the assigned report</li>
+<li>Consider the criteria &amp; questions below</li>
+<li>Write constructive assessment and feedback for each question, e.g. what is good, what is missing / hard to understand, what can be improved.</li>
+</ul></div>
+</section>
+<section class="section" id="draft-1-maxwell-kav-overall" data-title="Overall">
 <div class="section-head">
 <h2>Overall</h2>
 <span class="section-range">Q1–2</span>
 </div>
-<article class="qa" id="maxwell-kav-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? the report was easy to follow and contained relevant stuff. i thought it was relatively professional and it motivated why they believe in their idea.">
+<article class="qa" id="draft-1-maxwell-kav-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? my general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.">
 <div class="qa-q">
 <span class="num">01</span>
 <h3>General impression of report: professional, organised, confidence inspiring etc?</h3>
 </div>
 <div class="qa-a">
-<p>The report was easy to follow and contained relevant stuff. I thought it was relatively professional and it motivated why they believe in their idea.</p>
+<p>My general impression is a professional, and well organised report structure with no thick walls of text, and a good looking logo for the group.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? it was overall easy to read but i found a few small language faults. for example “the team competence gaps…” should be “team’s” and  “the realistic initial market for this venture is the city of lund, here we ourselves have many connections,” should be “where” instead of “here” i believe. the problem is the struggle of planning events and inviting people and their solution is a new software focused more on the private person.">
+<article class="qa" id="draft-1-maxwell-kav-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? i think the problem (event planning in existing apps is clunky) and the proposed solution (a dedicated event app for private/public events) are clearly communicated.">
 <div class="qa-q">
 <span class="num">02</span>
 <h3>Language: clarity, ease of understanding, e.g. what is the problem &amp; the solution?</h3>
 </div>
 <div class="qa-a">
-<p>It was overall easy to read but I found a few small language faults. For example <span class="quote">“The team competence gaps…”</span> should be <span class="quote">“team’s”</span> and  <span class="quote">“The realistic initial market for this venture is the city of Lund, here we ourselves have many connections,”</span> should be <span class="quote">“where”</span> instead of <span class="quote">“here”</span> i believe. The problem is the struggle of planning events and inviting people and their solution is a new software focused more on the private person.</p>
+<p>I think the problem (event planning in existing apps is clunky) and the proposed solution (a dedicated event app for private/public events) are clearly communicated.</p>
 </div>
 </article>
 </section>
-<section class="section" id="maxwell-kav-business-model" data-title="Business model">
+<section class="section" id="draft-1-maxwell-kav-business-model" data-title="Business model">
 <div class="section-head">
 <h2>Business model</h2>
 <span class="section-range">Q3–10</span>
 </div>
-<article class="qa" id="maxwell-kav-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? yes, it describes well from a user’s perspective. maybe the line about that many of the interviewees have been using social media recently and that it can be used for marketing is a bit unnecessary, or can at least be moved further down, cause i think it is pretty obvious that most students/young people are using social media more or less. the other parts about the mom-test i think are very good and show that a problem exists with the current solutions that exist.">
+<article class="qa" id="draft-1-maxwell-kav-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? the report explains the customer perspective well and uses the results from the mom test they conducted to confirm that students struggle with messy and finding venues.">
 <div class="qa-q">
 <span class="num">03</span>
 <h3>Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?</h3>
 </div>
 <div class="qa-a">
-<p>Yes, it describes well from a user’s perspective. Maybe the line about that many of the interviewees have been using social media recently and that it can be used for marketing is a bit unnecessary, or can at least be moved further down, cause I think it is pretty obvious that most students/young people are using social media more or less. The other parts about the MOM-test I think are very good and show that a problem exists with the current solutions that exist.</p>
+<p>The report explains the customer perspective well and uses the results from the Mom Test they conducted to confirm that students struggle with messy and finding venues.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? not completely new but a bit different from the ones they mention and what i know. the biggest difference is that the main focus of the app is hosting events and more focus on the private consumer.">
+<article class="qa" id="draft-1-maxwell-kav-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? no, the idea is not completely new; apps like partiful and luma already solve the friction-free invitation problem. however, this venture combines private event invitations with venue booking which make it stand out more. the report should acknowledge these competitors and not only compare itself to platforms like facebook event and orbi.">
 <div class="qa-q">
 <span class="num">04</span>
 <h3>Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions?</h3>
 </div>
 <div class="qa-a">
-<p>Not completely new but a bit different from the ones they mention and what I know. The biggest difference is that the main focus of the app is hosting events and more focus on the private consumer.</p>
+<p>No, the idea is not completely new; apps like Partiful and Luma already solve the friction-free invitation problem. However, this venture combines private event invitations with venue booking which make it stand out more. The report should acknowledge these competitors and not only compare itself to platforms like Facebook event and Orbi.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? i think the biggest difference compared to existing alternatives is that events will be the main focus for the app rather than an extra feature and that it focuses more on the private person. i think that it is pretty easy to copy but since this group has people currently studying it will give them an edge in understanding the problem well. i think when the app has got a lot of users it will be hard to compete with but in the beginning when not a lot are using it another company could steal their potential future users.">
+<article class="qa" id="draft-1-maxwell-kav-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? the main advantage i can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which i think is very easy for competitors to copy.">
 <div class="qa-q">
 <span class="num">05</span>
 <h3>Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?</h3>
 </div>
 <div class="qa-a">
-<p>I think the biggest difference compared to existing alternatives is that events will be the main focus for the app rather than an extra feature and that it focuses more on the private person. I think that it is pretty easy to copy but since this group has people currently studying it will give them an edge in understanding the problem well. I think when the app has got a lot of users it will be hard to compete with but in the beginning when not a lot are using it another company could steal their potential future users.</p>
+<p>The main advantage I can see compared to other alternatives is a cleaner, more dedicated interface for private student events, which I think is very easy for competitors to copy.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? it will generate revenue from event holders that want their event to be featured and also a small fee for the event venues when they get a reservation. possible also from ads in the future. not sure if it is realistic. if it costs to feature an event a lot of event holders might use for example facebook instead and do it for free. if it is cheaper to reserve venues at other places it might also be tough to get people to pay extra for a reservation.">
+<article class="qa" id="draft-1-maxwell-kav-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? as i understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. while i understand the idea i can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.">
 <div class="qa-q">
 <span class="num">06</span>
 <h3>How will money be earned on the product/service? Is the revenue model realistic?</h3>
 </div>
 <div class="qa-a">
-<p>It will generate revenue from event holders that want their event to be featured and also a small fee for the event venues when they get a reservation. Possible also from ads in the future. Not sure if it is realistic. If it costs to feature an event a lot of event holders might use for example Facebook instead and do it for free. If it is cheaper to reserve venues at other places it might also be tough to get people to pay extra for a reservation.</p>
+<p>As I understand the money will be earned through events, venue booking commissions, and targeted ads, which keeps the app free for students. While I understand the idea I can not help to think that the venue commissions may be a bit unrealistic early on since students rarely want to pay to rent commercial venues for private parties.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q7" data-search="how well does the business model fit the product/service? from what i have written previously i think that it is a good idea but a bit difficult to generate revenue.">
+<article class="qa" id="draft-1-maxwell-kav-q7" data-search="how well does the business model fit the product/service? i think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .">
 <div class="qa-q">
 <span class="num">07</span>
 <h3>How well does the business model fit the product/service?</h3>
 </div>
 <div class="qa-a">
-<p>From what I have written previously I think that it is a good idea but a bit difficult to generate revenue.</p>
+<p>I think the business model mostly fits the service well, since they have decided to keep the application free for students (who are less likely to want to pay and are the early adopters) while it generates revenue from venues and organizations .</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q8" data-search="is it clear where venture capital will come from? realistic? not sure exactly where the venture capital will be coming from.">
+<article class="qa" id="draft-1-maxwell-kav-q8" data-search="is it clear where venture capital will come from? realistic? i can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live.">
 <div class="qa-q">
 <span class="num">08</span>
 <h3>Is it clear where venture capital will come from? Realistic?</h3>
 </div>
 <div class="qa-a">
-<p>Not sure exactly where the venture capital will be coming from.</p>
+<p>I can’t see a statement in the report where initial venture capital or startup funding will come from, it only states the revenue stream when the application is live.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? i think that it is described well and includes both their strengths and what is missing. contribution is also described well in the appendix. very organized appendix.">
+<article class="qa" id="draft-1-maxwell-kav-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? the team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).i can see in the appendix a.3 lists everyone&#x27;s hours, i can also see that some members provide much more specific task breakdowns than others.">
 <div class="qa-q">
 <span class="num">09</span>
 <h3>Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?</h3>
 </div>
 <div class="qa-a">
-<p>I think that it is described well and includes both their strengths and what is missing. Contribution is also described well in the appendix. Very organized appendix.</p>
+<p>The team highlights their technical skills and gaps in marketing, business, and law, so maybe recruiting a business co-founder is more realistic than hiring external consultants (mostly in theory tho).I can see in the appendix A.3 lists everyone&#x27;s hours, I can also see that some members provide much more specific task breakdowns than others.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q10" data-search="what are the chances that this team will succeed? i think it will be very difficult in the beginning of the project until it potentially has a lot of users cause it is difficult to invite people to an event if most people you want to invite don’t have the app. i also think it will be difficult to find ways of generating revenue until it has become an app that most students have and use. if it has a large user base event holders might pay a little extra to feature and promote their event on the app but if it doesn’t have a lot of users it will be hard to compete with already commonly used alternatives.">
+<article class="qa" id="draft-1-maxwell-kav-q10" data-search="what are the chances that this team will succeed? i think with their strong tech skills and lund student network give them a solid shot at building a local prototype, but commercial success is moderate.">
 <div class="qa-q">
 <span class="num">10</span>
 <h3>What are the chances that this team will succeed?</h3>
 </div>
 <div class="qa-a">
-<p>I think it will be very difficult in the beginning of the project until it potentially has a lot of users cause it is difficult to invite people to an event if most people you want to invite don’t have the app. I also think it will be difficult to find ways of generating revenue until it has become an app that most students have and use. If it has a large user base event holders might pay a little extra to feature and promote their event on the app but if it doesn’t have a lot of users it will be hard to compete with already commonly used alternatives.</p>
+<p>I think with their strong tech skills and Lund student network give them a solid shot at building a local prototype, but commercial success is moderate.</p>
 </div>
 </article>
 </section>
-<section class="section" id="maxwell-kav-market-analysis" data-title="Market analysis">
+<section class="section" id="draft-1-maxwell-kav-market-analysis" data-title="Market analysis">
 <div class="section-head">
 <h2>Market analysis</h2>
 <span class="section-range">Q11–15</span>
 </div>
-<article class="qa" id="maxwell-kav-q11" data-search="is it clear which customers that are likely to buy the product/service? it is clear that students who are hosting or joining events are the users. exactly who the customers are and how you make money from it might be a bit unclear i think.">
+<article class="qa" id="draft-1-maxwell-kav-q11" data-search="is it clear which customers that are likely to buy the product/service? the report seems to identify venues, student organizations, and advertisers as paying clients. but something i find unclear is if the free users (the students who use the app to go to events) are customers? a solution might be to clearly separate the free and paying customers.">
 <div class="qa-q">
 <span class="num">11</span>
 <h3>Is it clear which customers that are likely to buy the product/service?</h3>
 </div>
 <div class="qa-a">
-<p>It is clear that students who are hosting or joining events are the users. Exactly who the customers are and how you make money from it might be a bit unclear I think.</p>
+<p>The report seems to identify venues, student organizations, and advertisers as paying clients. But something I find unclear is if the free users (the students who use the app to go to events) are customers? A solution might be to clearly separate the free and paying customers.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q12" data-search="who are the competitors? can you think of other and/or more relevant competitors? they mention facebook, orbi, hitract, stuk and ticketmaster and i can’t really think of any else.">
+<article class="qa" id="draft-1-maxwell-kav-q12" data-search="what kind of competitors have been identified? can you think of other and/or more relevant competitors? i think they have correctly identified local student platforms like orbi, hitract, and stuk alongside facebook events and ticketmaster. some more relevant competitors are partiful and luma which already solve the friction-free invitation problem.">
 <div class="qa-q">
 <span class="num">12</span>
-<h3>Who are the competitors? Can you think of other and/or more relevant competitors?</h3>
+<h3>What kind of competitors have been identified? Can you think of other and/or more relevant competitors?</h3>
 </div>
 <div class="qa-a">
-<p>They mention Facebook, Orbi, Hitract, Stuk and Ticketmaster and I can’t really think of any else.</p>
+<p>I think they have correctly identified local student platforms like Orbi, Hitract, and Stuk alongside Facebook Events and Ticketmaster. Some more relevant competitors are Partiful and Luma which already solve the friction-free invitation problem.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? that their app is actually better and easier to use for a private consumer because i think that is where they think they stand out compared to competitors.">
+<article class="qa" id="draft-1-maxwell-kav-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? i think the product-market is fitting and is mostly motivated by personal experience and mom test interviews. through prototyping, they can validate whether guests will actually download a new app.">
 <div class="qa-q">
 <span class="num">13</span>
 <h3>Consider the motivation of the product-market fit. What aspects need to be validated through prototyping?</h3>
 </div>
 <div class="qa-a">
-<p>That their app is actually better and easier to use for a private consumer because I think that is where they think they stand out compared to competitors.</p>
+<p>I think the product-market is fitting and is mostly motivated by personal experience and Mom Test interviews. Through prototyping, they can validate whether guests will actually download a new app.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q14" data-search="is the initially targeted market (early adopters) realistic? yes, it is realistic to start with students in lund and then grow to other cities as well.">
+<article class="qa" id="draft-1-maxwell-kav-q14" data-search="is the initially targeted market (early adopters) realistic? yes the initially target market (student in universities) is realistic, since lund university has around 41000 enrolled students.">
 <div class="qa-q">
 <span class="num">14</span>
 <h3>Is the initially targeted market (early adopters) realistic?</h3>
 </div>
 <div class="qa-a">
-<p>Yes, it is realistic to start with students in Lund and then grow to other cities as well.</p>
+<p>Yes the initially target market (student in universities) is realistic, since Lund university has around 41000 enrolled students.</p>
 </div>
 </article>
-<article class="qa" id="maxwell-kav-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? as i wrote before, the biggest problem will be to get an initial big user base and reach out to enough people. if a big amount of people use the app then i think getting more people will be very easy because then you need the app to not miss out on events.">
+<article class="qa" id="draft-1-maxwell-kav-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? i think that campus word of mouth, hosting their own events, and partnering with student organizations are trustworthy,it is a low-cost way to reach lund students.">
 <div class="qa-q">
 <span class="num">15</span>
 <h3>How trustworthy is the market channel (distribution, customer reach out)?</h3>
 </div>
 <div class="qa-a">
-<p>As I wrote before, the biggest problem will be to get an initial big user base and reach out to enough people. If a big amount of people use the app then I think getting more people will be very easy because then you need the app to not miss out on events.</p>
+<p>I think that campus word of mouth, hosting their own events, and partnering with student organizations are trustworthy,it is a low-cost way to reach Lund students.</p>
 </div>
 </article>
 </section>
 </section>
-<section class="doc" id="doc-valdemar-rasmusson" data-doc="valdemar-rasmusson" role="tabpanel" aria-labelledby="tab-valdemar-rasmusson" hidden>
+<section class="doc" id="doc-draft-1-valdemar-rasmusson" data-doc="draft-1-valdemar-rasmusson" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-valdemar-rasmusson" hidden>
 <div class="doc-head">
-<p class="doc-kicker">Document 03</p>
+<p class="doc-kicker">Draft 1 · Document 03</p>
 <h2>Peer review by Valdemar Rasmusson</h2>
 <div class="doc-meta">
 <code>valdemar-rasmusson.txt</code><span>15 answers</span><span>~1,001 words</span>
@@ -694,12 +716,12 @@ main{max-width:760px;width:100%}
 <p class="summary-label">Reviewer’s summary</p>
 <p class="summary-text">Overall a very nice and well written report. As I have written in my peer review I think the biggest problem will be to get a big initial user base and how to generate revenue.</p>
 </div>
-<section class="section" id="valdemar-rasmusson-overall" data-title="Overall">
+<section class="section" id="draft-1-valdemar-rasmusson-overall" data-title="Overall">
 <div class="section-head">
 <h2>Overall</h2>
 <span class="section-range">Q1–2</span>
 </div>
-<article class="qa" id="valdemar-rasmusson-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? the report was easy to follow and contained relevant stuff. i thought it was relatively professional and it motivated why they believe in their idea.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q1" data-search="general impression of report: professional, organised, confidence inspiring etc? the report was easy to follow and contained relevant stuff. i thought it was relatively professional and it motivated why they believe in their idea.">
 <div class="qa-q">
 <span class="num">01</span>
 <h3>General impression of report: professional, organised, confidence inspiring etc?</h3>
@@ -708,7 +730,7 @@ main{max-width:760px;width:100%}
 <p>The report was easy to follow and contained relevant stuff. I thought it was relatively professional and it motivated why they believe in their idea.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? it was overall easy to read but i found a few small language faults. for example “the team competence gaps…” should be “team’s” and  “the realistic initial market for this venture is the city of lund, here we ourselves have many connections,” should be “where” instead of “here” i believe. the problem is the struggle of planning events and inviting people and their solution is a new software focused more on the private person.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q2" data-search="language: clarity, ease of understanding, e.g. what is the problem &amp; the solution? it was overall easy to read but i found a few small language faults. for example “the team competence gaps…” should be “team’s” and  “the realistic initial market for this venture is the city of lund, here we ourselves have many connections,” should be “where” instead of “here” i believe. the problem is the struggle of planning events and inviting people and their solution is a new software focused more on the private person.">
 <div class="qa-q">
 <span class="num">02</span>
 <h3>Language: clarity, ease of understanding, e.g. what is the problem &amp; the solution?</h3>
@@ -718,12 +740,12 @@ main{max-width:760px;width:100%}
 </div>
 </article>
 </section>
-<section class="section" id="valdemar-rasmusson-business-model" data-title="Business model">
+<section class="section" id="draft-1-valdemar-rasmusson-business-model" data-title="Business model">
 <div class="section-head">
 <h2>Business model</h2>
 <span class="section-range">Q3–10</span>
 </div>
-<article class="qa" id="valdemar-rasmusson-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? yes, it describes well from a user’s perspective. maybe the line about that many of the interviewees have been using social media recently and that it can be used for marketing is a bit unnecessary, or can at least be moved further down, cause i think it is pretty obvious that most students/young people are using social media more or less. the other parts about the mom-test i think are very good and show that a problem exists with the current solutions that exist.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q3" data-search="consider the description of the business model. does it describe the user/customer perspective? how is mom test used to motivate the targeted problem? yes, it describes well from a user’s perspective. maybe the line about that many of the interviewees have been using social media recently and that it can be used for marketing is a bit unnecessary, or can at least be moved further down, cause i think it is pretty obvious that most students/young people are using social media more or less. the other parts about the mom-test i think are very good and show that a problem exists with the current solutions that exist.">
 <div class="qa-q">
 <span class="num">03</span>
 <h3>Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?</h3>
@@ -732,7 +754,7 @@ main{max-width:760px;width:100%}
 <p>Yes, it describes well from a user’s perspective. Maybe the line about that many of the interviewees have been using social media recently and that it can be used for marketing is a bit unnecessary, or can at least be moved further down, cause I think it is pretty obvious that most students/young people are using social media more or less. The other parts about the MOM-test I think are very good and show that a problem exists with the current solutions that exist.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? not completely new but a bit different from the ones they mention and what i know. the biggest difference is that the main focus of the app is hosting events and more focus on the private consumer.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q4" data-search="consider the novelty of the business idea. is the product/service new or are you aware of comparable solutions? not completely new but a bit different from the ones they mention and what i know. the biggest difference is that the main focus of the app is hosting events and more focus on the private consumer.">
 <div class="qa-q">
 <span class="num">04</span>
 <h3>Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions?</h3>
@@ -741,7 +763,7 @@ main{max-width:760px;width:100%}
 <p>Not completely new but a bit different from the ones they mention and what I know. The biggest difference is that the main focus of the app is hosting events and more focus on the private consumer.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? i think the biggest difference compared to existing alternatives is that events will be the main focus for the app rather than an extra feature and that it focuses more on the private person. i think that it is pretty easy to copy but since this group has people currently studying it will give them an edge in understanding the problem well. i think when the app has got a lot of users it will be hard to compete with but in the beginning when not a lot are using it another company could steal their potential future users.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q5" data-search="consider the competitiveness of the product/service. how superior is the solution compared to other alternatives? how easy is it for others to copy the business model (and thereby further increase competition)? i think the biggest difference compared to existing alternatives is that events will be the main focus for the app rather than an extra feature and that it focuses more on the private person. i think that it is pretty easy to copy but since this group has people currently studying it will give them an edge in understanding the problem well. i think when the app has got a lot of users it will be hard to compete with but in the beginning when not a lot are using it another company could steal their potential future users.">
 <div class="qa-q">
 <span class="num">05</span>
 <h3>Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?</h3>
@@ -750,7 +772,7 @@ main{max-width:760px;width:100%}
 <p>I think the biggest difference compared to existing alternatives is that events will be the main focus for the app rather than an extra feature and that it focuses more on the private person. I think that it is pretty easy to copy but since this group has people currently studying it will give them an edge in understanding the problem well. I think when the app has got a lot of users it will be hard to compete with but in the beginning when not a lot are using it another company could steal their potential future users.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? it will generate revenue from event holders that want their event to be featured and also a small fee for the event venues when they get a reservation. possible also from ads in the future. not sure if it is realistic. if it costs to feature an event a lot of event holders might use for example facebook instead and do it for free. if it is cheaper to reserve venues at other places it might also be tough to get people to pay extra for a reservation.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q6" data-search="how will money be earned on the product/service? is the revenue model realistic? it will generate revenue from event holders that want their event to be featured and also a small fee for the event venues when they get a reservation. possible also from ads in the future. not sure if it is realistic. if it costs to feature an event a lot of event holders might use for example facebook instead and do it for free. if it is cheaper to reserve venues at other places it might also be tough to get people to pay extra for a reservation.">
 <div class="qa-q">
 <span class="num">06</span>
 <h3>How will money be earned on the product/service? Is the revenue model realistic?</h3>
@@ -759,7 +781,7 @@ main{max-width:760px;width:100%}
 <p>It will generate revenue from event holders that want their event to be featured and also a small fee for the event venues when they get a reservation. Possible also from ads in the future. Not sure if it is realistic. If it costs to feature an event a lot of event holders might use for example Facebook instead and do it for free. If it is cheaper to reserve venues at other places it might also be tough to get people to pay extra for a reservation.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q7" data-search="how well does the business model fit the product/service? from what i have written previously i think that it is a good idea but a bit difficult to generate revenue.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q7" data-search="how well does the business model fit the product/service? from what i have written previously i think that it is a good idea but a bit difficult to generate revenue.">
 <div class="qa-q">
 <span class="num">07</span>
 <h3>How well does the business model fit the product/service?</h3>
@@ -768,7 +790,7 @@ main{max-width:760px;width:100%}
 <p>From what I have written previously I think that it is a good idea but a bit difficult to generate revenue.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q8" data-search="is it clear where venture capital will come from? realistic? not sure exactly where the venture capital will be coming from.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q8" data-search="is it clear where venture capital will come from? realistic? not sure exactly where the venture capital will be coming from.">
 <div class="qa-q">
 <span class="num">08</span>
 <h3>Is it clear where venture capital will come from? Realistic?</h3>
@@ -777,7 +799,7 @@ main{max-width:760px;width:100%}
 <p>Not sure exactly where the venture capital will be coming from.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? i think that it is described well and includes both their strengths and what is missing. contribution is also described well in the appendix. very organized appendix.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q9" data-search="consider the team behind the business. how well is the competence and strengths of the team described? are any vital competences missing (that ought to be recruited)? how well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)? i think that it is described well and includes both their strengths and what is missing. contribution is also described well in the appendix. very organized appendix.">
 <div class="qa-q">
 <span class="num">09</span>
 <h3>Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?</h3>
@@ -786,7 +808,7 @@ main{max-width:760px;width:100%}
 <p>I think that it is described well and includes both their strengths and what is missing. Contribution is also described well in the appendix. Very organized appendix.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q10" data-search="what are the chances that this team will succeed? i think it will be very difficult in the beginning of the project until it potentially has a lot of users cause it is difficult to invite people to an event if most people you want to invite don’t have the app. i also think it will be difficult to find ways of generating revenue until it has become an app that most students have and use. if it has a large user base event holders might pay a little extra to feature and promote their event on the app but if it doesn’t have a lot of users it will be hard to compete with already commonly used alternatives.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q10" data-search="what are the chances that this team will succeed? i think it will be very difficult in the beginning of the project until it potentially has a lot of users cause it is difficult to invite people to an event if most people you want to invite don’t have the app. i also think it will be difficult to find ways of generating revenue until it has become an app that most students have and use. if it has a large user base event holders might pay a little extra to feature and promote their event on the app but if it doesn’t have a lot of users it will be hard to compete with already commonly used alternatives.">
 <div class="qa-q">
 <span class="num">10</span>
 <h3>What are the chances that this team will succeed?</h3>
@@ -796,12 +818,12 @@ main{max-width:760px;width:100%}
 </div>
 </article>
 </section>
-<section class="section" id="valdemar-rasmusson-market-analysis" data-title="Market analysis">
+<section class="section" id="draft-1-valdemar-rasmusson-market-analysis" data-title="Market analysis">
 <div class="section-head">
 <h2>Market analysis</h2>
 <span class="section-range">Q11–15</span>
 </div>
-<article class="qa" id="valdemar-rasmusson-q11" data-search="is it clear which customers that are likely to buy the product/service? it is clear that students who are hosting or joining events are the users. exactly who the customers are and how you make money from it might be a bit unclear i think.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q11" data-search="is it clear which customers that are likely to buy the product/service? it is clear that students who are hosting or joining events are the users. exactly who the customers are and how you make money from it might be a bit unclear i think.">
 <div class="qa-q">
 <span class="num">11</span>
 <h3>Is it clear which customers that are likely to buy the product/service?</h3>
@@ -810,7 +832,7 @@ main{max-width:760px;width:100%}
 <p>It is clear that students who are hosting or joining events are the users. Exactly who the customers are and how you make money from it might be a bit unclear I think.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q12" data-search="who are the competitors? can you think of other and/or more relevant competitors? they mention facebook, orbi, hitract, stuk and ticketmaster and i can’t really think of any else.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q12" data-search="who are the competitors? can you think of other and/or more relevant competitors? they mention facebook, orbi, hitract, stuk and ticketmaster and i can’t really think of any else.">
 <div class="qa-q">
 <span class="num">12</span>
 <h3>Who are the competitors? Can you think of other and/or more relevant competitors?</h3>
@@ -819,7 +841,7 @@ main{max-width:760px;width:100%}
 <p>They mention Facebook, Orbi, Hitract, Stuk and Ticketmaster and I can’t really think of any else.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? that their app is actually better and easier to use for a private consumer because i think that is where they think they stand out compared to competitors.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q13" data-search="consider the motivation of the product-market fit. what aspects need to be validated through prototyping? that their app is actually better and easier to use for a private consumer because i think that is where they think they stand out compared to competitors.">
 <div class="qa-q">
 <span class="num">13</span>
 <h3>Consider the motivation of the product-market fit. What aspects need to be validated through prototyping?</h3>
@@ -828,7 +850,7 @@ main{max-width:760px;width:100%}
 <p>That their app is actually better and easier to use for a private consumer because I think that is where they think they stand out compared to competitors.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q14" data-search="is the initially targeted market (early adopters) realistic? yes, it is realistic to start with students in lund and then grow to other cities as well.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q14" data-search="is the initially targeted market (early adopters) realistic? yes, it is realistic to start with students in lund and then grow to other cities as well.">
 <div class="qa-q">
 <span class="num">14</span>
 <h3>Is the initially targeted market (early adopters) realistic?</h3>
@@ -837,7 +859,7 @@ main{max-width:760px;width:100%}
 <p>Yes, it is realistic to start with students in Lund and then grow to other cities as well.</p>
 </div>
 </article>
-<article class="qa" id="valdemar-rasmusson-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? as i wrote before, the biggest problem will be to get an initial big user base and reach out to enough people. if a big amount of people use the app then i think getting more people will be very easy because then you need the app to not miss out on events.">
+<article class="qa" id="draft-1-valdemar-rasmusson-q15" data-search="how trustworthy is the market channel (distribution, customer reach out)? as i wrote before, the biggest problem will be to get an initial big user base and reach out to enough people. if a big amount of people use the app then i think getting more people will be very easy because then you need the app to not miss out on events.">
 <div class="qa-q">
 <span class="num">15</span>
 <h3>How trustworthy is the market channel (distribution, customer reach out)?</h3>
@@ -853,7 +875,7 @@ main{max-width:760px;width:100%}
 
 <footer class="foot">
   <div class="wrap">
-    <p>Source files: <code>johannes-persson.txt</code> · <code>maxwell-kav.txt</code> · <code>valdemar-rasmusson.txt</code>.<br>
+    <p>Source files: <code>reviews/draft-1/johannes-persson.txt</code> · <code>reviews/draft-1/maxwell-kav.txt</code> · <code>reviews/draft-1/valdemar-rasmusson.txt</code>.<br>
     Compiled 18 November 2026. <kbd>/</kbd> to search, <kbd>Esc</kbd> to clear.</p>
   </div>
 </footer>
@@ -865,6 +887,7 @@ main{max-width:760px;width:100%}
 <script>
 const tabs = Array.from(document.querySelectorAll('.doc-tab'));
 const docs = Array.from(document.querySelectorAll('.doc'));
+const roundButtons = Array.from(document.querySelectorAll('.round-btn'));
 const tocLists = Array.from(document.querySelectorAll('.toc-list'));
 const search = document.getElementById('search');
 const resultCount = document.getElementById('resultCount');
@@ -903,15 +926,25 @@ function applySearch() {
 }
 
 function setActiveDoc(slug, { scroll = false } = {}) {
-  tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.target === slug)));
-  docs.forEach(doc => { doc.hidden = doc.dataset.doc !== slug; });
-  tocLists.forEach(list => { list.hidden = list.dataset.doc !== slug; });
+  const doc = docs.find(item => item.dataset.doc === slug) || docs[0];
+  if (!doc) return;
+  const round = doc.dataset.round;
+
+  tabs.forEach(tab => {
+    tab.hidden = tab.dataset.round !== round;
+    tab.setAttribute('aria-selected', String(tab.dataset.target === doc.dataset.doc));
+  });
+  roundButtons.forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.round === round));
+  });
+  docs.forEach(item => { item.hidden = item !== doc; });
+  tocLists.forEach(list => { list.hidden = list.dataset.doc !== doc.dataset.doc; });
   if (search.value) { search.value = ''; }
   resultCount.textContent = '';
   applySearch();
   if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
   updateActiveSection();
-  try { history.replaceState(null, '', '#' + slug); } catch (e) {}
+  try { history.replaceState(null, '', '#' + doc.dataset.doc); } catch (e) {}
 }
 
 function updateActiveSection() {
@@ -934,6 +967,13 @@ function updateActiveSection() {
 
 tabs.forEach(tab => {
   tab.addEventListener('click', () => setActiveDoc(tab.dataset.target, { scroll: true }));
+});
+
+roundButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const first = tabs.find(tab => tab.dataset.round === button.dataset.round);
+    if (first) setActiveDoc(first.dataset.target, { scroll: true });
+  });
 });
 
 search.addEventListener('input', applySearch);
@@ -973,8 +1013,8 @@ toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smoot
 document.querySelector('.print-btn').addEventListener('click', () => window.print());
 
 const initial = (location.hash || '').replace('#', '');
-const valid = tabs.some(tab => tab.dataset.target === initial);
-setActiveDoc(valid ? initial : tabs[0].dataset.target);
+const initialTab = tabs.find(tab => tab.dataset.target === initial);
+setActiveDoc(initialTab ? initial : tabs[0].dataset.target);
 onScroll();
 </script>
 </body>

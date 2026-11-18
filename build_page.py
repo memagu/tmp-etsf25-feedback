@@ -3,6 +3,7 @@
 
 import html
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -194,22 +195,41 @@ def display_name(stem: str) -> str:
     return " ".join(word[:1].upper() + word[1:] for word in words if word)
 
 
-def discover_docs():
-    paths = sorted(REVIEWS.glob("*.txt"), key=lambda path: path.name.casefold())
-    docs = []
-    for path in paths:
-        name = display_name(path.stem)
-        docs.append(
+def natural_key(text: str):
+    return [int(part) if part.isdigit() else part.lower() for part in re.split(r"(\d+)", text)]
+
+
+def discover_rounds():
+    rounds = []
+    for round_dir in sorted((p for p in REVIEWS.iterdir() if p.is_dir()), key=lambda p: natural_key(p.name)):
+        paths = sorted(round_dir.glob("*.txt"), key=lambda path: path.name.casefold())
+        if not paths:
+            continue
+        docs = []
+        for path in paths:
+            name = display_name(path.stem)
+            docs.append(
+                {
+                    "file": path.name,
+                    "path": path,
+                    "relative": str(path.relative_to(ROOT)),
+                    "slug": f"{slugify(round_dir.name)}-{slugify(path.stem)}",
+                    "tab": name,
+                    "short": name.split()[0] if name else path.stem,
+                    "title": f"Peer review by {name}",
+                    "note": f"Review of the {DRAFT_NAME}.",
+                    "round": slugify(round_dir.name),
+                    "round_title": display_name(round_dir.name),
+                }
+            )
+        rounds.append(
             {
-                "file": path.name,
-                "slug": slugify(path.stem),
-                "tab": name,
-                "short": name.split()[0] if name else path.stem,
-                "title": f"Peer review by {name}",
-                "note": f"Review of the {DRAFT_NAME}.",
+                "slug": slugify(round_dir.name),
+                "title": display_name(round_dir.name),
+                "docs": docs,
             }
         )
-    return docs
+    return rounds
 
 
 def render_doc(doc, sections, index):
@@ -219,9 +239,9 @@ def render_doc(doc, sections, index):
     words += sum(len(p.split()) for s in sections if s["kind"] == "intro" for p in s["paragraphs"])
 
     out = []
-    out.append(f'<section class="doc" id="doc-{slug}" data-doc="{slug}" role="tabpanel" aria-labelledby="tab-{slug}" hidden>')
+    out.append(f'<section class="doc" id="doc-{slug}" data-doc="{slug}" data-round="{doc["round"]}" role="tabpanel" aria-labelledby="tab-{slug}" hidden>')
     out.append('<div class="doc-head">')
-    out.append(f'<p class="doc-kicker">Document {index:02d}</p>')
+    out.append(f'<p class="doc-kicker">{html.escape(doc["round_title"])} · Document {index:02d}</p>')
     out.append(f"<h2>{html.escape(doc['title'])}</h2>")
     out.append('<div class="doc-meta">')
     out.append(f"<code>{html.escape(doc['file'])}</code><span>{len(questions)} answers</span><span>~{words:,} words</span>")
@@ -379,7 +399,16 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
   border-bottom:1px solid var(--line-strong);
 }
 .tabbar-inner{display:flex;align-items:stretch;justify-content:space-between;gap:18px}
-.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.rounds{display:flex;align-items:center;gap:3px;padding-right:10px;flex:0 0 auto}
+.round-btn{
+  appearance:none;border:0;background:none;border-radius:999px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);padding:6px 10px;cursor:pointer;white-space:nowrap;transition:.16s ease;
+}
+.round-btn:hover{color:var(--ink)}
+.round-btn[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tab-divider{width:1px;height:20px;background:var(--line-strong);align-self:center;margin-right:6px;flex:0 0 auto}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto}
 .tabs::-webkit-scrollbar{display:none}
 .doc-tab{
   appearance:none;background:none;border:0;border-bottom:2px solid transparent;
@@ -481,7 +510,7 @@ main{max-width:760px;width:100%}
   box-shadow:inset 0 -0.5em 0 rgba(194,149,79,.2);
   -webkit-box-decoration-break:clone;box-decoration-break:clone;
 }
-.qa[hidden],.section[hidden],.doc[hidden],.toc-list[hidden]{display:none}
+.qa[hidden],.section[hidden],.doc[hidden],.toc-list[hidden],.doc-tab[hidden]{display:none}
 
 /* Document summary */
 .doc-summary{
@@ -535,6 +564,9 @@ main{max-width:760px;width:100%}
   .layout{padding-bottom:56px}
   .doc-tab{padding:14px 9px 12px;font-size:12.5px}
   .doc-tab .tab-count{display:none}
+  .rounds{padding-right:2px;gap:1px}
+  .round-btn{font-size:9px;padding:5px 7px}
+  .tab-divider{margin-right:0}
   .tab-label .full{display:none}
   .tab-label .mini{display:inline}
   .print-btn span{display:none}
@@ -568,6 +600,7 @@ main{max-width:760px;width:100%}
 JS = r"""
 const tabs = Array.from(document.querySelectorAll('.doc-tab'));
 const docs = Array.from(document.querySelectorAll('.doc'));
+const roundButtons = Array.from(document.querySelectorAll('.round-btn'));
 const tocLists = Array.from(document.querySelectorAll('.toc-list'));
 const search = document.getElementById('search');
 const resultCount = document.getElementById('resultCount');
@@ -606,15 +639,25 @@ function applySearch() {
 }
 
 function setActiveDoc(slug, { scroll = false } = {}) {
-  tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.target === slug)));
-  docs.forEach(doc => { doc.hidden = doc.dataset.doc !== slug; });
-  tocLists.forEach(list => { list.hidden = list.dataset.doc !== slug; });
+  const doc = docs.find(item => item.dataset.doc === slug) || docs[0];
+  if (!doc) return;
+  const round = doc.dataset.round;
+
+  tabs.forEach(tab => {
+    tab.hidden = tab.dataset.round !== round;
+    tab.setAttribute('aria-selected', String(tab.dataset.target === doc.dataset.doc));
+  });
+  roundButtons.forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.round === round));
+  });
+  docs.forEach(item => { item.hidden = item !== doc; });
+  tocLists.forEach(list => { list.hidden = list.dataset.doc !== doc.dataset.doc; });
   if (search.value) { search.value = ''; }
   resultCount.textContent = '';
   applySearch();
   if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
   updateActiveSection();
-  try { history.replaceState(null, '', '#' + slug); } catch (e) {}
+  try { history.replaceState(null, '', '#' + doc.dataset.doc); } catch (e) {}
 }
 
 function updateActiveSection() {
@@ -637,6 +680,13 @@ function updateActiveSection() {
 
 tabs.forEach(tab => {
   tab.addEventListener('click', () => setActiveDoc(tab.dataset.target, { scroll: true }));
+});
+
+roundButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const first = tabs.find(tab => tab.dataset.round === button.dataset.round);
+    if (first) setActiveDoc(first.dataset.target, { scroll: true });
+  });
 });
 
 search.addEventListener('input', applySearch);
@@ -676,45 +726,85 @@ toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smoot
 document.querySelector('.print-btn').addEventListener('click', () => window.print());
 
 const initial = (location.hash || '').replace('#', '');
-const valid = tabs.some(tab => tab.dataset.target === initial);
-setActiveDoc(valid ? initial : tabs[0].dataset.target);
+const initialTab = tabs.find(tab => tab.dataset.target === initial);
+setActiveDoc(initialTab ? initial : tabs[0].dataset.target);
 onScroll();
 """
 
 
+def review_body(sections):
+    return tuple(
+        (q["number"], q["question"], tuple(q["answers"]))
+        for section in sections
+        for q in section["questions"]
+    )
+
+
 def main():
-    docs = discover_docs()
-    if not docs:
-        raise SystemExit(f"No .txt review files found in {REVIEWS}")
+    rounds = discover_rounds()
+    if not rounds:
+        raise SystemExit(f"No review rounds with .txt files found in {REVIEWS}")
 
     docs_html = []
     tocs_html = []
+    all_docs = []
     all_questions = 0
     all_words = 0
-    counts = []
 
-    for index, doc in enumerate(docs, start=1):
-        sections = parse(REVIEWS / doc["file"])
-        html_doc, questions, words = render_doc(doc, sections, index)
-        docs_html.append(html_doc)
-        tocs_html.append(render_toc(doc, sections))
-        all_questions += len(questions)
-        all_words += words
-        counts.append(len(questions))
+    for round_data in rounds:
+        seen_bodies = {}
+        for index, doc in enumerate(round_data["docs"], start=1):
+            sections = parse(doc["path"])
+            body = review_body(sections)
+            if body in seen_bodies:
+                print(
+                    f"warning: {doc['relative']} has the same answers as {seen_bodies[body]}",
+                    file=sys.stderr,
+                )
+            else:
+                seen_bodies[body] = doc["relative"]
+
+            html_doc, questions, words = render_doc(doc, sections, index)
+            doc["index"] = index
+            doc["count"] = len(questions)
+            docs_html.append(html_doc)
+            tocs_html.append(render_toc(doc, sections))
+            all_questions += len(questions)
+            all_words += words
+            all_docs.append(doc)
 
     tabs_html = "\n".join(
         (
             f'<button class="doc-tab" id="tab-{doc["slug"]}" role="tab" '
-            f'aria-controls="doc-{doc["slug"]}" aria-selected="false" data-target="{doc["slug"]}">'
-            f'<span class="tab-num">{i:02d}</span>'
-            f'<span class="tab-label"><span class="full">{html.escape(doc["tab"])}</span><span class="mini">{html.escape(doc["short"])}</span></span>'
-            f'<span class="tab-count">{count}</span>'
+            f'aria-controls="doc-{doc["slug"]}" aria-selected="false" '
+            f'data-target="{doc["slug"]}" data-round="{doc["round"]}"'
+            + (" hidden" if doc["round"] != rounds[0]["slug"] else "")
+            + ">"
+            f'<span class="tab-num">{doc["index"]:02d}</span>'
+            f'<span class="tab-label"><span class="full">{html.escape(doc["tab"])}</span>'
+            f'<span class="mini">{html.escape(doc["short"])}</span></span>'
+            f'<span class="tab-count">{doc["count"]}</span>'
             "</button>"
         )
-        for i, (doc, count) in enumerate(zip(docs, counts), start=1)
+        for doc in all_docs
     )
 
-    source_list = " · ".join(f'<code>{html.escape(doc["file"])}</code>' for doc in docs)
+    if len(rounds) > 1:
+        round_buttons = "".join(
+            f'<button class="round-btn" type="button" data-round="{round_data["slug"]}" '
+            f'aria-pressed="{str(i == 0).lower()}">{html.escape(round_data["title"])}</button>'
+            for i, round_data in enumerate(rounds)
+        )
+        round_switcher = (
+            f'<div class="rounds" role="group" aria-label="Review rounds">{round_buttons}</div>'
+            '<span class="tab-divider" aria-hidden="true"></span>'
+        )
+    else:
+        round_switcher = ""
+
+    source_list = " · ".join(
+        f'<code>{html.escape(doc["relative"])}</code>' for doc in all_docs
+    )
     css = CSS
     js = JS
 
@@ -748,7 +838,7 @@ def main():
     <p class="lede">Written feedback on the ETSF25 project draft, lifted out of plain text and laid out question by question.</p>
     <div class="chips">
       <span class="chip accent">"""
-        + str(len(docs))
+        + str(len(all_docs))
         + """ files</span>
       <span class="chip">"""
         + str(all_questions)
@@ -763,6 +853,9 @@ def main():
 
 <div class="tabbar">
   <div class="wrap tabbar-inner">
+      """
+        + round_switcher
+        + """
     <div class="tabs" role="tablist" aria-label="Documents">
       """
         + tabs_html

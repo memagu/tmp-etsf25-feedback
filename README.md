@@ -10,21 +10,25 @@ A single-page, self-contained reading edition of three plain-text peer reviews f
 | --- | --- |
 | `index.html` | The generated site — complete, self-contained, and ready to serve |
 | `favicon.svg` | Site icon |
-| `build_page.py` | Generator that turns `reviews/*.txt` into `index.html` |
-| `reviews/johannes-persson.txt` | Peer review by Johannes Persson |
-| `reviews/maxwell-kav.txt` | Peer review by Maxwell Kav |
-| `reviews/valdemar-rasmusson.txt` | Peer review by Valdemar Rasmusson |
+| `build_page.py` | Generator that turns the review files into `index.html` |
+| `reviews/draft-1/johannes-persson.txt` | Peer review by Johannes Persson |
+| `reviews/draft-1/maxwell-kav.txt` | Peer review by Maxwell Kav |
+| `reviews/draft-1/valdemar-rasmusson.txt` | Peer review by Valdemar Rasmusson |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is |
 
-The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling. Every `.txt` file in `reviews/` becomes a tab; the filename supplies the reviewer label, and files are ordered alphabetically.
+The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling.
+
+Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each `.txt` file inside becomes a reviewer tab, named from its filename and ordered alphabetically. When more than one round exists, a round switcher appears in the tab bar.
 
 ## Regenerate the page
 
-After editing any file in `reviews/`:
+After editing a review file, or adding a new round:
 
 ```sh
 python3 build_page.py
 ```
+
+If two reviews in the same round have identical answers, the build prints a warning naming both files so accidental copies can be caught before publishing.
 
 The script uses only the Python standard library. The generated `index.html` embeds all CSS and JavaScript, so it also works when opened directly from disk.
 
@@ -54,4 +58,4 @@ No workflow or build action is needed: `index.html` is committed and ready to se
 
 - Each review opens with a short overall comment, separated from the numbered criteria by `---`. The generator renders that opening as the summary block at the top of the document.
 - All document text is presented unchanged. Only the layout, typography, and navigation were added.
-- To add another review, drop a new `.txt` file into `reviews/` and run `python3 build_page.py`.
+- To add another round, create `reviews/draft-2/` and drop the reviewer `.txt` files inside, then run `python3 build_page.py`.
