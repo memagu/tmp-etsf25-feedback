@@ -103,17 +103,21 @@ def parse(path: Path):
             question = match.group(2).strip()
             i += 1
 
-            # Wrapped question lines (files without blank lines between Q and A)
-            while i < len(lines):
-                candidate = lines[i].strip()
-                if not candidate:
-                    break
-                if candidate.lower().startswith("answer:"):
-                    break
-                if is_section(candidate) or Q_RE.match(candidate):
-                    break
-                question += " " + candidate
-                i += 1
+            # Wrapped question lines (files without blank lines between Q and A).
+            # Once a line ends the question, the next block is the answer.
+            if not question.endswith("?"):
+                while i < len(lines):
+                    candidate = lines[i].strip()
+                    if not candidate:
+                        break
+                    if candidate.lower().startswith("answer:"):
+                        break
+                    if is_section(candidate) or Q_RE.match(candidate):
+                        break
+                    question += " " + candidate
+                    i += 1
+                    if candidate.endswith("?"):
+                        break
 
             current_q = {"number": number, "question": question, "answers": []}
             current["questions"].append(current_q)
@@ -269,7 +273,7 @@ def render_doc(doc, sections, index):
     )
     out.append("</div>")
     out.append('<div class="doc-meta">')
-    out.append(f"<code>{html.escape(doc['file'])}</code><span>{len(questions)} answers</span><span>~{words:,} words</span>")
+    out.append(f"<code>{html.escape(doc['file'])}</code><span>{len(questions)} questions</span><span>~{words:,} words</span>")
     out.append("</div>")
     out.append(f'<p class="doc-note">{doc["note"]}</p>')
     out.append("</div>")
@@ -780,7 +784,7 @@ function updateCount() {
   const cards = Array.from(doc.querySelectorAll('.qa'));
   const shown = cards.filter(card => !card.hidden).length;
   if (q) {
-    resultCount.textContent = `${shown} of ${cards.length} answers match “${search.value.trim()}”`;
+    resultCount.textContent = `${shown} of ${cards.length} questions match “${search.value.trim()}”`;
   } else {
     resultCount.textContent = '';
   }
@@ -1318,7 +1322,7 @@ def main():
         + """ files</span>
       <span class="chip">"""
         + str(all_questions)
-        + """ answers</span>
+        + """ questions</span>
       <span class="chip">~"""
         + f"{all_words:,}"
         + """ words</span>
@@ -1400,7 +1404,7 @@ def main():
 
     output = ROOT / "index.html"
     output.write_text("".join(page), encoding="utf-8")
-    print(f"wrote {output} ({output.stat().st_size:,} bytes, {all_questions} answers)")
+    print(f"wrote {output} ({output.stat().st_size:,} bytes, {all_questions} questions)")
 
 
 if __name__ == "__main__":
