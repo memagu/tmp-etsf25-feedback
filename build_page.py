@@ -259,10 +259,10 @@ def render_doc(doc, sections, index):
     out.append(f"<h2>{html.escape(doc['title'])}</h2>")
     out.append("</div>")
     out.append(
-        '<button class="complete-btn" type="button" aria-pressed="false">'
+        f'<div class="review-status" aria-live="polite" aria-label="0 of {len(questions)} questions handled">'
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>'
-        '<span class="complete-label">Mark complete</span>'
-        "</button>"
+        f'<span class="review-status-label">0 / {len(questions)} handled</span>'
+        "</div>"
     )
     out.append("</div>")
     out.append('<div class="doc-meta">')
@@ -303,10 +303,19 @@ def render_doc(doc, sections, index):
         for q in section["questions"]:
             qid = f"{slug}-q{q['number']}"
             search_blob = " ".join([q["question"]] + q["answers"]).lower()
-            out.append(f'<article class="qa" id="{qid}" data-search="{html.escape(search_blob, quote=True)}">')
+            out.append(f'<article class="qa" id="{qid}" data-q="{q["number"]}" data-search="{html.escape(search_blob, quote=True)}">')
             out.append('<div class="qa-q">')
             out.append(f'<span class="num">{q["number"]:02d}</span>')
             out.append(f"<h3>{inline(q['question'])}</h3>")
+            out.append(
+                '<button class="qa-check" type="button" aria-pressed="false" '
+                f'aria-label="Mark question {q["number"]} as handled" title="Mark as handled">'
+                '<span class="qa-box" aria-hidden="true">'
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/></svg>'
+                "</span>"
+                '<span class="qa-check-label">Handled</span>'
+                "</button>"
+            )
             out.append("</div>")
             if q["answers"]:
                 out.append('<div class="qa-a">')
@@ -551,16 +560,15 @@ body.split-view .pdf-pane{
 .doc-head-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px}
 .doc-kicker{margin:0 0 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .doc-head h2{margin:0;font-size:clamp(1.7rem,3vw,2.3rem);line-height:1.15;letter-spacing:-.02em;font-weight:600;max-width:24ch}
-.complete-btn{
-  appearance:none;display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;
-  font-family:var(--sans);font-size:11.5px;font-weight:500;color:var(--muted);
+.review-status{
+  display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;
+  font-family:var(--sans);font-size:11px;font-weight:500;color:var(--muted);
   background:rgba(255,253,248,.5);border:1px solid var(--line-strong);border-radius:999px;
-  padding:7px 12px;cursor:pointer;transition:.18s ease;white-space:nowrap;margin-top:2px;
+  padding:6px 11px;white-space:nowrap;margin-top:2px;transition:.18s ease;
 }
-.complete-btn:hover{color:var(--ink);border-color:var(--muted)}
-.complete-btn svg{width:14px;height:14px}
-.complete-btn[aria-pressed="true"]{color:var(--green);border-color:rgba(62,107,80,.38);background:var(--green-wash)}
-.complete-btn[aria-pressed="true"] svg{stroke-width:2.4}
+.review-status svg{width:14px;height:14px;opacity:.75}
+.doc.is-complete .review-status{color:var(--green);border-color:rgba(62,107,80,.38);background:var(--green-wash)}
+.doc.is-complete .review-status svg{opacity:1}
 .doc.is-complete .doc-kicker{color:var(--green)}
 .doc-tab.is-complete .tab-label::after{content:"✓";margin-left:6px;font-size:10px;font-weight:600;color:var(--green)}
 .doc-meta{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:16px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
@@ -586,7 +594,24 @@ body.split-view .pdf-pane{
   display:inline-flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:9.5px;font-weight:500;color:var(--accent);letter-spacing:.02em;
 }
-.qa h3{margin:0;font-size:1.06rem;line-height:1.42;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
+.qa h3{flex:1;min-width:0;margin:0;font-size:1.06rem;line-height:1.42;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
+.qa-check{
+  appearance:none;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;align-self:flex-start;
+  background:none;border:1px solid transparent;border-radius:6px;padding:4px 7px;margin:-4px -7px 0 0;
+  font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:.16s ease;
+}
+.qa-check:hover{background:rgba(32,28,22,.045);color:var(--ink)}
+.qa-box{
+  width:15px;height:15px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--line-strong);border-radius:4px;background:var(--card);transition:.16s ease;
+}
+.qa-box svg{width:10px;height:10px;stroke:var(--paper);opacity:0;transition:opacity .12s ease}
+.qa-check[aria-pressed="true"]{color:var(--green)}
+.qa-check[aria-pressed="true"] .qa-box{background:var(--green);border-color:var(--green)}
+.qa-check[aria-pressed="true"] .qa-box svg{opacity:1}
+.qa.is-handled{border-color:rgba(62,107,80,.42)}
+.qa.is-handled .num{color:var(--green);border-color:rgba(62,107,80,.5)}
+.qa.is-handled .qa-a{border-left-color:rgba(62,107,80,.24)}
 .qa-a{margin:13px 0 0 40px;padding-left:17px;border-left:2px solid var(--accent-wash)}
 .qa-a p{margin:0;font-size:1.01rem;line-height:1.74;color:var(--ink-soft)}
 .qa-a p + p{margin-top:.7em}
@@ -664,6 +689,9 @@ body.split-view .pdf-pane{
   .qa{padding:18px 17px;border-radius:10px}
   .qa-a{margin-left:0;padding-left:14px}
   .qa h3{font-size:1rem}
+  .qa-check{width:32px;height:32px;padding:0;justify-content:center;margin:-6px -6px 0 0}
+  .qa-box{width:18px;height:18px}
+  .qa-check-label{display:none}
   .num{width:24px;height:24px;font-size:9px}
   .sidebar{grid-template-columns:1fr}
   .doc-meta > * + *::before{content:"";margin-right:0}
@@ -675,7 +703,7 @@ body.split-view .pdf-pane{
 }
 @media print{
   body{background:#fff;font-size:11pt}
-  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot,.complete-btn{display:none!important}
+  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot,.qa-check,.review-status{display:none!important}
   .pdf-pane{display:none!important}
   .wrap{width:100%}
   .masthead{padding:0 0 16px}
@@ -703,13 +731,13 @@ const pdfKicker = document.getElementById('pdfKicker');
 const pdfOpen = document.getElementById('pdfOpen');
 const viewButtons = Array.from(document.querySelectorAll('.view-switch button'));
 const roundProgress = document.getElementById('roundProgress');
-const COMPLETE_KEY = "etsf25-feedback-complete-v1";
-let completed = {};
+const HANDLED_KEY = "etsf25-question-handled-v1";
+let handled = {};
 try {
-  const parsed = JSON.parse(localStorage.getItem(COMPLETE_KEY) || "{}");
-  completed = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  const parsed = JSON.parse(localStorage.getItem(HANDLED_KEY) || "{}");
+  handled = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
 } catch (e) {
-  completed = {};
+  handled = {};
 }
 
 function activeDoc() {
@@ -770,8 +798,12 @@ function updatePdf() {
   }
 }
 
-function saveCompletion() {
-  try { localStorage.setItem(COMPLETE_KEY, JSON.stringify(completed)); } catch (e) {}
+function saveHandled() {
+  try { localStorage.setItem(HANDLED_KEY, JSON.stringify(handled)); } catch (e) {}
+}
+
+function questionKey(doc, number) {
+  return doc + "|" + number;
 }
 
 function updateRoundProgress() {
@@ -779,26 +811,41 @@ function updateRoundProgress() {
   const doc = activeDoc();
   if (!doc) return;
   const roundDocs = docs.filter(item => item.dataset.round === doc.dataset.round);
-  const done = roundDocs.filter(item => completed[item.dataset.doc] === true).length;
+  const done = roundDocs.filter(item => item.classList.contains("is-complete")).length;
   roundProgress.textContent = done + " / " + roundDocs.length + " complete";
   roundProgress.classList.toggle("all-done", roundDocs.length > 0 && done === roundDocs.length);
 }
 
-function applyCompletion() {
-  docs.forEach(item => {
-    const done = completed[item.dataset.doc] === true;
-    item.classList.toggle("is-complete", done);
-    const button = item.querySelector(".complete-btn");
-    if (button) {
-      button.setAttribute("aria-pressed", String(done));
-      button.setAttribute("aria-label", done ? "Mark feedback as incomplete" : "Mark feedback as complete");
-      const label = button.querySelector(".complete-label");
-      if (label) label.textContent = done ? "Completed" : "Mark complete";
-    }
+function applyHandled() {
+  docs.forEach(doc => {
+    const cards = Array.from(doc.querySelectorAll(".qa"));
+    let done = 0;
+
+    cards.forEach(card => {
+      const isHandled = handled[questionKey(doc.dataset.doc, card.dataset.q)] === true;
+      card.classList.toggle("is-handled", isHandled);
+      if (isHandled) done += 1;
+
+      const button = card.querySelector(".qa-check");
+      if (button) {
+        button.setAttribute("aria-pressed", String(isHandled));
+        button.setAttribute("aria-label", "Question " + card.dataset.q + ": mark as " + (isHandled ? "not handled" : "handled"));
+        button.title = isHandled ? "Mark as not handled" : "Mark as handled";
+      }
+    });
+
+    const complete = cards.length > 0 && done === cards.length;
+    doc.classList.toggle("is-complete", complete);
+
+    const status = doc.querySelector(".review-status");
+    const label = doc.querySelector(".review-status-label");
+    if (label) label.textContent = complete ? "Complete" : done + " / " + cards.length + " handled";
+    if (status) status.setAttribute("aria-label", complete ? "All questions handled — review complete" : done + " of " + cards.length + " questions handled");
+
+    const tab = tabs.find(item => item.dataset.target === doc.dataset.doc);
+    if (tab) tab.classList.toggle("is-complete", complete);
   });
-  tabs.forEach(tab => {
-    tab.classList.toggle("is-complete", completed[tab.dataset.target] === true);
-  });
+
   updateRoundProgress();
 }
 
@@ -868,27 +915,28 @@ roundButtons.forEach(button => {
   });
 });
 
-docs.forEach(item => {
-  const button = item.querySelector(".complete-btn");
-  if (!button) return;
-  button.addEventListener("click", () => {
-    const slug = item.dataset.doc;
-    if (completed[slug]) delete completed[slug];
-    else completed[slug] = true;
-    saveCompletion();
-    applyCompletion();
+docs.forEach(doc => {
+  doc.querySelectorAll(".qa-check").forEach(button => {
+    button.addEventListener("click", () => {
+      const card = button.closest(".qa");
+      const key = questionKey(doc.dataset.doc, card.dataset.q);
+      if (handled[key]) delete handled[key];
+      else handled[key] = true;
+      saveHandled();
+      applyHandled();
+    });
   });
 });
 
 window.addEventListener("storage", event => {
-  if (event.key !== COMPLETE_KEY) return;
+  if (event.key !== HANDLED_KEY) return;
   try {
     const parsed = JSON.parse(event.newValue || "{}");
-    completed = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    handled = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
   } catch (e) {
-    completed = {};
+    handled = {};
   }
-  applyCompletion();
+  applyHandled();
 });
 
 viewButtons.forEach(button => {
@@ -934,7 +982,7 @@ document.querySelector('.print-btn').addEventListener('click', () => window.prin
 const initial = (location.hash || '').replace('#', '');
 const initialTab = tabs.find(tab => tab.dataset.target === initial);
 setActiveDoc(initialTab ? initial : tabs[0].dataset.target);
-applyCompletion();
+applyHandled();
 syncView();
 onScroll();
 """
