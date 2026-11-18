@@ -4,6 +4,7 @@
 import html
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from urllib.parse import quote
 
@@ -188,7 +189,9 @@ def inline(text: str) -> str:
 
 
 def slugify(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    text = unicodedata.normalize("NFKD", text.lower())
+    text = text.encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z0-9]+", "-", text).strip("-")
 
 
 def display_name(stem: str) -> str:
