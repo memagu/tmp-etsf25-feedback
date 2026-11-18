@@ -398,22 +398,27 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
   border-top:1px solid var(--line);
   border-bottom:1px solid var(--line-strong);
 }
-.tabbar-inner{display:flex;align-items:stretch;justify-content:space-between;gap:18px}
-.rounds{display:flex;align-items:center;gap:3px;padding-right:10px;flex:0 0 auto}
-.round-btn{
-  appearance:none;border:0;background:none;border-radius:999px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--muted);padding:6px 10px;cursor:pointer;white-space:nowrap;transition:.16s ease;
+.tabbar-inner{display:flex;align-items:stretch;justify-content:space-between;gap:18px;border-top:1px solid var(--line)}
+.round-row{display:flex;align-items:center;gap:11px;padding:9px 0 8px}
+.round-label{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+.rounds{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.round-btn,.round-current{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:999px;padding:4px 10px;white-space:nowrap;
 }
-.round-btn:hover{color:var(--ink)}
-.round-btn[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.tab-divider{width:1px;height:20px;background:var(--line-strong);align-self:center;margin-right:6px;flex:0 0 auto}
+.round-btn{
+  appearance:none;border:1px solid var(--line-strong);background:none;
+  color:var(--muted);cursor:pointer;transition:.16s ease;
+}
+.round-btn:hover{color:var(--ink);border-color:var(--muted)}
+.round-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.round-current{background:var(--ink);border:1px solid var(--ink);color:var(--paper)}
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto}
 .tabs::-webkit-scrollbar{display:none}
 .doc-tab{
   appearance:none;background:none;border:0;border-bottom:2px solid transparent;
   color:var(--muted);font-family:var(--sans);font-size:13.5px;font-weight:500;
-  padding:17px 14px 15px;cursor:pointer;white-space:nowrap;
+  padding:12px 14px 11px;cursor:pointer;white-space:nowrap;
   display:flex;align-items:center;gap:9px;transition:color .18s ease,border-color .18s ease;
   margin-bottom:-1px;
 }
@@ -482,7 +487,7 @@ main{max-width:760px;width:100%}
 .doc-note{margin:14px 0 0;font-family:var(--sans);font-size:12px;color:var(--muted)}
 .doc-note code{font-size:.92em}
 
-.section{margin-bottom:44px;scroll-margin-top:84px}
+.section{margin-bottom:44px;scroll-margin-top:104px}
 .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 18px;padding-bottom:9px;border-bottom:1px solid var(--line)}
 .section-head h2{margin:0;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--ink-soft)}
 .section-range{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.04em}
@@ -562,11 +567,10 @@ main{max-width:760px;width:100%}
 @media (max-width:620px){
   .wrap{width:calc(100% - 32px)}
   .layout{padding-bottom:56px}
-  .doc-tab{padding:14px 9px 12px;font-size:12.5px}
+  .doc-tab{padding:11px 9px 10px;font-size:12.5px}
   .doc-tab .tab-count{display:none}
-  .rounds{padding-right:2px;gap:1px}
-  .round-btn{font-size:9px;padding:5px 7px}
-  .tab-divider{margin-right:0}
+  .round-row{padding:7px 0 6px;gap:8px}
+  .round-btn,.round-current{font-size:9px;padding:4px 8px}
   .tab-label .full{display:none}
   .tab-label .mini{display:inline}
   .print-btn span{display:none}
@@ -795,12 +799,14 @@ def main():
             f'aria-pressed="{str(i == 0).lower()}">{html.escape(round_data["title"])}</button>'
             for i, round_data in enumerate(rounds)
         )
-        round_switcher = (
-            f'<div class="rounds" role="group" aria-label="Review rounds">{round_buttons}</div>'
-            '<span class="tab-divider" aria-hidden="true"></span>'
-        )
+        round_controls = round_buttons
     else:
-        round_switcher = ""
+        round_controls = f'<span class="round-current">{html.escape(rounds[0]["title"])}</span>'
+
+    round_switcher = (
+        '<span class="round-label">Review round</span>'
+        f'<div class="rounds" role="group" aria-label="Review rounds">{round_controls}</div>'
+    )
 
     source_list = " · ".join(
         f'<code>{html.escape(doc["relative"])}</code>' for doc in all_docs
@@ -852,19 +858,23 @@ def main():
 </header>
 
 <div class="tabbar">
-  <div class="wrap tabbar-inner">
+  <div class="wrap">
+    <div class="round-row">
       """
         + round_switcher
         + """
-    <div class="tabs" role="tablist" aria-label="Documents">
-      """
+    </div>
+    <div class="tabbar-inner">
+      <div class="tabs" role="tablist" aria-label="Reviews in this round">
+        """
         + tabs_html
         + """
+      </div>
+      <button class="print-btn" type="button" aria-label="Print or save as PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Print / PDF</span>
+      </button>
     </div>
-    <button class="print-btn" type="button" aria-label="Print or save as PDF">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      <span>Print / PDF</span>
-    </button>
   </div>
 </div>
 

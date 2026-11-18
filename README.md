@@ -18,7 +18,7 @@ A single-page, self-contained reading edition of three plain-text peer reviews f
 
 The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling.
 
-Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each `.txt` file inside becomes a reviewer tab, named from its filename and ordered alphabetically. When more than one round exists, a round switcher appears in the tab bar.
+Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each `.txt` file inside becomes a reviewer tab, named from its filename and ordered alphabetically. The active round is shown above the reviewer tabs; when more than one round exists, the round buttons switch between them.
 
 ## Regenerate the page
 
