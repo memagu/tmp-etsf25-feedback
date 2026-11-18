@@ -308,13 +308,8 @@ def render_doc(doc, sections, index):
             out.append(f'<span class="num">{q["number"]:02d}</span>')
             out.append(f"<h3>{inline(q['question'])}</h3>")
             out.append(
-                '<button class="qa-check" type="button" aria-pressed="false" '
-                f'aria-label="Mark question {q["number"]} as handled" title="Mark as handled">'
-                '<span class="qa-box" aria-hidden="true">'
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/></svg>'
-                "</span>"
-                '<span class="qa-check-label">Handled</span>'
-                "</button>"
+                '<button class="qa-hint" type="button" aria-pressed="false" '
+                f'aria-label="Mark question {q["number"]} as handled">Click to complete</button>'
             )
             out.append("</div>")
             if q["answers"]:
@@ -585,7 +580,7 @@ body.split-view .pdf-pane{
 .qa{
   background:var(--card);border:1px solid var(--line);border-radius:12px;
   padding:21px 23px 22px;margin-bottom:12px;box-shadow:var(--shadow);
-  transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+  cursor:pointer;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease,background .2s ease;
 }
 .qa:hover{border-color:var(--line-strong);transform:translateY(-1px);box-shadow:0 1px 2px rgba(72,48,24,.05),0 20px 40px -26px rgba(72,48,24,.4)}
 .qa-q{display:flex;gap:13px;align-items:flex-start}
@@ -595,21 +590,21 @@ body.split-view .pdf-pane{
   font-family:var(--mono);font-size:9.5px;font-weight:500;color:var(--accent);letter-spacing:.02em;
 }
 .qa h3{flex:1;min-width:0;margin:0;font-size:1.06rem;line-height:1.42;font-weight:600;letter-spacing:-.005em;color:var(--ink)}
-.qa-check{
-  appearance:none;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;align-self:flex-start;
-  background:none;border:1px solid transparent;border-radius:6px;padding:4px 7px;margin:-4px -7px 0 0;
-  font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:.16s ease;
+.qa-hint{
+  appearance:none;background:none;border:0;padding:2px 0;margin:1px 0 0 0;
+  font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--muted);
+  opacity:.72;cursor:pointer;white-space:nowrap;flex:0 0 auto;align-self:flex-start;
+  transition:.16s ease;
 }
-.qa-check:hover{background:rgba(32,28,22,.045);color:var(--ink)}
-.qa-box{
-  width:15px;height:15px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
-  border:1px solid var(--line-strong);border-radius:4px;background:var(--card);transition:.16s ease;
+.qa:hover .qa-hint{opacity:1}
+.qa-hint:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.qa-hint:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.qa-hint[aria-pressed="true"]{color:var(--green);opacity:1}
+.qa.is-handled{
+  background:linear-gradient(155deg,#eef5ec 0%,#f9fcf7 100%);
+  border-color:rgba(62,107,80,.42);
 }
-.qa-box svg{width:10px;height:10px;stroke:var(--paper);opacity:0;transition:opacity .12s ease}
-.qa-check[aria-pressed="true"]{color:var(--green)}
-.qa-check[aria-pressed="true"] .qa-box{background:var(--green);border-color:var(--green)}
-.qa-check[aria-pressed="true"] .qa-box svg{opacity:1}
-.qa.is-handled{border-color:rgba(62,107,80,.42)}
+.qa.is-handled:hover{border-color:rgba(62,107,80,.6)}
 .qa.is-handled .num{color:var(--green);border-color:rgba(62,107,80,.5)}
 .qa.is-handled .qa-a{border-left-color:rgba(62,107,80,.24)}
 .qa-a{margin:13px 0 0 40px;padding-left:17px;border-left:2px solid var(--accent-wash)}
@@ -689,9 +684,7 @@ body.split-view .pdf-pane{
   .qa{padding:18px 17px;border-radius:10px}
   .qa-a{margin-left:0;padding-left:14px}
   .qa h3{font-size:1rem}
-  .qa-check{width:32px;height:32px;padding:0;justify-content:center;margin:-6px -6px 0 0}
-  .qa-box{width:18px;height:18px}
-  .qa-check-label{display:none}
+  .qa-hint{font-size:9px}
   .num{width:24px;height:24px;font-size:9px}
   .sidebar{grid-template-columns:1fr}
   .doc-meta > * + *::before{content:"";margin-right:0}
@@ -703,7 +696,7 @@ body.split-view .pdf-pane{
 }
 @media print{
   body{background:#fff;font-size:11pt}
-  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot,.qa-check,.review-status{display:none!important}
+  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot,.qa-hint,.review-status{display:none!important}
   .pdf-pane{display:none!important}
   .wrap{width:100%}
   .masthead{padding:0 0 16px}
@@ -826,11 +819,14 @@ function applyHandled() {
       card.classList.toggle("is-handled", isHandled);
       if (isHandled) done += 1;
 
-      const button = card.querySelector(".qa-check");
-      if (button) {
-        button.setAttribute("aria-pressed", String(isHandled));
-        button.setAttribute("aria-label", "Question " + card.dataset.q + ": mark as " + (isHandled ? "not handled" : "handled"));
-        button.title = isHandled ? "Mark as not handled" : "Mark as handled";
+      const hint = card.querySelector(".qa-hint");
+      if (hint) {
+        hint.setAttribute("aria-pressed", String(isHandled));
+        hint.textContent = isHandled ? "Completed" : "Click to complete";
+        hint.setAttribute("aria-label", isHandled
+          ? "Question " + card.dataset.q + " completed — click to mark as not handled"
+          : "Question " + card.dataset.q + " — click to mark as handled");
+        hint.title = isHandled ? "Click to mark as not handled" : "Click to mark as handled";
       }
     });
 
@@ -916,9 +912,20 @@ roundButtons.forEach(button => {
 });
 
 docs.forEach(doc => {
-  doc.querySelectorAll(".qa-check").forEach(button => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".qa");
+  doc.querySelectorAll(".qa").forEach(card => {
+    let origin = null;
+
+    card.addEventListener("pointerdown", event => {
+      origin = { x: event.clientX, y: event.clientY };
+    });
+
+    card.addEventListener("click", event => {
+      if (event.detail !== 0 && origin) {
+        const moved = Math.abs(event.clientX - origin.x) > 6 || Math.abs(event.clientY - origin.y) > 6;
+        if (moved) return;
+      }
+      if (window.getSelection && String(window.getSelection()).trim()) return;
+
       const key = questionKey(doc.dataset.doc, card.dataset.q);
       if (handled[key]) delete handled[key];
       else handled[key] = true;

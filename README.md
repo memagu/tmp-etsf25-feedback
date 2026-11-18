@@ -17,7 +17,7 @@ A single-page, self-contained reading edition of three plain-text peer reviews f
 | `reviews/draft-1/valdemar-rasmusson.txt` | Peer review by Valdemar Rasmusson |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is |
 
-The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling. The reviewed draft is displayed in a split view beside the comments. Each question can be marked handled. A review is marked complete automatically once all its questions are handled; per-question state is stored in the browser (`localStorage`) on that device, with a per-round progress count.
+The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling. The reviewed draft is displayed in a split view beside the comments. Click anywhere on a question card (or the “Click to complete” hint) to mark it handled; it gets a green tint, and clicking again reopens it. A review is marked complete automatically once all its questions are handled. Per-question state is stored in the browser (`localStorage`) on that device, with a per-round progress count.
 
 Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each round folder contains the reviewed draft as `report.pdf` plus one `.txt` file per reviewer. Each `.txt` file becomes a reviewer tab, named from its filename and ordered alphabetically. The active round is shown above the reviewer tabs; when more than one round exists, the round buttons switch between them.
 
