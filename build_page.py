@@ -578,9 +578,9 @@ body.split-view .pdf-pane{
 .section:first-of-type{margin-top:0}
 
 .qa{
-  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;
   padding:21px 23px 22px;margin-bottom:12px;box-shadow:var(--shadow);
-  cursor:pointer;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease,background .2s ease;
+  cursor:pointer;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease,background .28s ease;
 }
 .qa:hover{border-color:var(--line-strong);transform:translateY(-1px);box-shadow:0 1px 2px rgba(72,48,24,.05),0 20px 40px -26px rgba(72,48,24,.4)}
 .qa-q{display:flex;gap:13px;align-items:flex-start}
@@ -599,14 +599,45 @@ body.split-view .pdf-pane{
 .qa:hover .qa-hint{opacity:1}
 .qa-hint:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
 .qa-hint:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.qa-hint[aria-pressed="true"]{color:var(--green);opacity:1}
-.qa.is-handled{
-  background:linear-gradient(155deg,#eef5ec 0%,#f9fcf7 100%);
-  border-color:rgba(62,107,80,.42);
+.qa-hint[aria-pressed="true"]{
+  color:var(--paper);background:var(--green);opacity:1;font-weight:600;
+  padding:3px 9px;margin:-1px -9px 0 0;border-radius:999px;
 }
-.qa.is-handled:hover{border-color:rgba(62,107,80,.6)}
-.qa.is-handled .num{color:var(--green);border-color:rgba(62,107,80,.5)}
-.qa.is-handled .qa-a{border-left-color:rgba(62,107,80,.24)}
+.qa.is-handled{
+  background:#dcecd5;
+  border-color:rgba(62,107,80,.58);
+  box-shadow:inset 4px 0 0 var(--green),0 1px 2px rgba(72,48,24,.04),0 14px 34px -26px rgba(62,107,80,.55);
+}
+.qa.is-handled:hover{border-color:rgba(62,107,80,.8)}
+.qa.is-handled .num{background:var(--green);border-color:var(--green);color:var(--paper)}
+.qa.is-handled .qa-a{border-left-color:rgba(62,107,80,.55)}
+@keyframes complete-pop{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.014)}
+  70%{transform:scale(.998)}
+  100%{transform:scale(1)}
+}
+@keyframes complete-ring{
+  0%{box-shadow:0 0 0 0 rgba(62,107,80,.4)}
+  100%{box-shadow:0 0 0 14px rgba(62,107,80,0)}
+}
+@keyframes hint-pop{
+  0%{transform:scale(.7);opacity:0}
+  60%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+@keyframes status-pop{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+.qa.just-completed{animation:complete-pop .52s cubic-bezier(.2,.9,.3,1.2)}
+.qa.just-completed::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  animation:complete-ring .6s ease-out;
+}
+.qa.just-completed .qa-hint{animation:hint-pop .38s cubic-bezier(.2,.9,.3,1.2);transform-origin:100% 50%}
+.review-status.status-pop{animation:status-pop .48s cubic-bezier(.2,.9,.3,1.2)}
 .qa-a{margin:13px 0 0 40px;padding-left:17px;border-left:2px solid var(--accent-wash)}
 .qa-a p{margin:0;font-size:1.01rem;line-height:1.74;color:var(--ink-soft)}
 .qa-a p + p{margin-top:.7em}
@@ -724,6 +755,7 @@ const pdfKicker = document.getElementById('pdfKicker');
 const pdfOpen = document.getElementById('pdfOpen');
 const viewButtons = Array.from(document.querySelectorAll('.view-switch button'));
 const roundProgress = document.getElementById('roundProgress');
+const reduceMotion = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
 const HANDLED_KEY = "etsf25-question-handled-v1";
 let handled = {};
 try {
@@ -927,10 +959,34 @@ docs.forEach(doc => {
       if (window.getSelection && String(window.getSelection()).trim()) return;
 
       const key = questionKey(doc.dataset.doc, card.dataset.q);
-      if (handled[key]) delete handled[key];
-      else handled[key] = true;
+      const marking = !handled[key];
+      if (marking) handled[key] = true;
+      else delete handled[key];
       saveHandled();
       applyHandled();
+
+      if (marking && !reduceMotion) {
+        card.classList.remove("just-completed");
+        void card.offsetWidth;
+        card.classList.add("just-completed");
+        window.clearTimeout(card._completeTimer);
+        card._completeTimer = window.setTimeout(() => card.classList.remove("just-completed"), 700);
+
+        if (doc.classList.contains("is-complete")) {
+          const status = doc.querySelector(".review-status");
+          if (status) {
+            status.classList.remove("status-pop");
+            void status.offsetWidth;
+            status.classList.add("status-pop");
+            window.clearTimeout(status._popTimer);
+            status._popTimer = window.setTimeout(() => status.classList.remove("status-pop"), 560);
+          }
+        }
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate(8); } catch (e) {}
+        }
+      }
     });
   });
 });
