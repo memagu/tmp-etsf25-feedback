@@ -350,6 +350,7 @@ body.split-view .pdf-pane{
 .to-top.show{opacity:1;pointer-events:auto;transform:none}
 .to-top:hover{color:var(--accent);border-color:var(--accent)}
 .to-top svg{width:15px;height:15px}
+.confetti-canvas{position:fixed;inset:0;display:block;width:100vw;height:100vh;pointer-events:none;z-index:75}
 
 @media (max-width:900px){
   .layout{grid-template-columns:1fr;gap:30px;padding-top:32px}
@@ -1185,6 +1186,110 @@ function updateRoundProgress() {
   roundProgress.classList.toggle("all-done", roundDocs.length > 0 && done === roundDocs.length);
 }
 
+function isRoundComplete(round) {
+  const roundDocs = docs.filter(item => item.dataset.round === round);
+  return roundDocs.length > 0 && roundDocs.every(item => item.classList.contains("is-complete"));
+}
+
+function launchConfetti(kind) {
+  if (reduceMotion) return;
+  if (window.__confettiCleanup) window.__confettiCleanup();
+
+  const canvas = document.createElement("canvas");
+  canvas.className = "confetti-canvas";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) { canvas.remove(); return; }
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const colors = ["#3e6b50", "#6f9c7c", "#a63f27", "#c2954f", "#d98a6a", "#e8d3a5"];
+  const big = kind === "round";
+  const count = big ? 260 : 180;
+  const duration = big ? 4200 : 3200;
+  const pieces = Array.from({ length: count }, () => {
+    const circle = Math.random() < 0.18;
+    return {
+      x: Math.random() * width,
+      y: -20 - Math.random() * height * 0.6,
+      w: 5 + Math.random() * 7,
+      h: circle ? 0 : 8 + Math.random() * 10,
+      vx: -0.6 + Math.random() * 1.2,
+      vy: 1.8 + Math.random() * 3.4 + (big ? 0.5 : 0),
+      rot: Math.random() * Math.PI * 2,
+      vr: -0.18 + Math.random() * 0.36,
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.015 + Math.random() * 0.03,
+      color: colors[(Math.random() * colors.length) | 0],
+      circle,
+      alpha: 0.85 + Math.random() * 0.15
+    };
+  });
+
+  const start = performance.now();
+  let raf = 0;
+  let done = false;
+
+  function cleanup() {
+    if (done) return;
+    done = true;
+    cancelAnimationFrame(raf);
+    canvas.remove();
+    window.removeEventListener("resize", onResize);
+    if (window.__confettiCleanup === cleanup) window.__confettiCleanup = null;
+  }
+
+  function onResize() {
+    cleanup();
+  }
+
+  window.addEventListener("resize", onResize);
+
+  function frame(now) {
+    const t = now - start;
+    ctx.clearRect(0, 0, width, height);
+    const fade = t > duration - 600 ? Math.max(0, (duration - t) / 600) : 1;
+
+    for (const p of pieces) {
+      p.vy += 0.035;
+      p.sway += p.swaySpeed;
+      p.x += p.vx + Math.sin(p.sway) * 0.9;
+      p.y += p.vy;
+      p.rot += p.vr;
+      ctx.save();
+      ctx.globalAlpha = p.alpha * fade;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.circle) {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+    }
+
+    if (t < duration) {
+      raf = requestAnimationFrame(frame);
+    } else {
+      cleanup();
+    }
+  }
+
+  window.__confettiCleanup = cleanup;
+  raf = requestAnimationFrame(frame);
+  window.setTimeout(cleanup, duration + 500);
+}
+
 function applyHandled() {
   docs.forEach(doc => {
     const cards = Array.from(doc.querySelectorAll(".qa"));
@@ -1304,19 +1409,25 @@ docs.forEach(doc => {
 
       const key = questionKey(doc.dataset.doc, card.dataset.q);
       const marking = !handled[key];
+      const wasDocComplete = doc.classList.contains("is-complete");
+      const wasRoundComplete = isRoundComplete(doc.dataset.round);
+
       if (marking) handled[key] = true;
       else delete handled[key];
       saveHandled();
       applyHandled();
 
       if (marking && !reduceMotion) {
+        const justCompleted = doc.classList.contains("is-complete") && !wasDocComplete;
+        const roundJustCompleted = justCompleted && isRoundComplete(doc.dataset.round) && !wasRoundComplete;
+
         card.classList.remove("just-completed");
         void card.offsetWidth;
         card.classList.add("just-completed");
         window.clearTimeout(card._completeTimer);
         card._completeTimer = window.setTimeout(() => card.classList.remove("just-completed"), 700);
 
-        if (doc.classList.contains("is-complete")) {
+        if (justCompleted) {
           const status = doc.querySelector(".review-status");
           if (status) {
             status.classList.remove("status-pop");
@@ -1325,10 +1436,13 @@ docs.forEach(doc => {
             window.clearTimeout(status._popTimer);
             status._popTimer = window.setTimeout(() => status.classList.remove("status-pop"), 560);
           }
+          launchConfetti(roundJustCompleted ? "round" : "review");
         }
 
         if (navigator.vibrate) {
-          try { navigator.vibrate(8); } catch (e) {}
+          try {
+            navigator.vibrate(justCompleted ? (roundJustCompleted ? [14, 45, 14, 45, 24] : [10, 30, 14]) : 8);
+          } catch (e) {}
         }
       }
     });

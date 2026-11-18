@@ -59,5 +59,6 @@ No workflow or build action is needed: `index.html` is committed and ready to se
 
 - Each review opens with a short overall comment, separated from the numbered criteria by `---`. The generator renders that opening as the summary block at the top of the document.
 - All document text is presented unchanged. Only the layout, typography, navigation, and local completion tracking were added.
+- Completing a review triggers a small confetti celebration; completing every review in the round triggers a larger one. Confetti is skipped when the browser requests reduced motion.
 - Question handling and review completion are per browser and per device — there is no backend, account, or shared state.
 - To add another round, create `reviews/draft-2/`, add `report.pdf` and the reviewer `.txt` files, then run `python3 build_page.py`.
