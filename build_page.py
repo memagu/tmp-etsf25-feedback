@@ -253,8 +253,18 @@ def render_doc(doc, sections, index):
         f'role="tabpanel" aria-labelledby="tab-{slug}" hidden>'
     )
     out.append('<div class="doc-head">')
+    out.append('<div class="doc-head-top">')
+    out.append('<div>')
     out.append(f'<p class="doc-kicker">{html.escape(doc["round_title"])} · Document {index:02d}</p>')
     out.append(f"<h2>{html.escape(doc['title'])}</h2>")
+    out.append("</div>")
+    out.append(
+        '<button class="complete-btn" type="button" aria-pressed="false">'
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>'
+        '<span class="complete-label">Mark complete</span>'
+        "</button>"
+    )
+    out.append("</div>")
     out.append('<div class="doc-meta">')
     out.append(f"<code>{html.escape(doc['file'])}</code><span>{len(questions)} answers</span><span>~{words:,} words</span>")
     out.append("</div>")
@@ -343,6 +353,8 @@ CSS = r"""
   --accent-deep:#83301d;
   --accent-wash:#f3e4da;
   --gold:#c2954f;
+  --green:#3e6b50;
+  --green-wash:#e8efe6;
   --serif:"IBM Plex Serif", "Charter", "Iowan Old Style", Georgia, "Liberation Serif", serif;
   --sans:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -425,8 +437,11 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 .round-btn:hover{color:var(--ink);border-color:var(--muted)}
 .round-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 .round-current{background:var(--ink);border:1px solid var(--ink);color:var(--paper)}
+.round-actions{margin-left:auto;display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.round-progress{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+.round-progress.all-done{color:var(--green)}
 .view-switch{
-  margin-left:auto;display:flex;align-items:center;flex:0 0 auto;
+  display:flex;align-items:center;flex:0 0 auto;
   border:1px solid var(--line-strong);border-radius:999px;overflow:hidden;
   background:rgba(255,253,248,.5);
 }
@@ -533,8 +548,21 @@ body.split-view .pdf-pane{
 .doc{animation:docIn .32s ease both}
 @keyframes docIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .doc-head{padding-bottom:34px;border-bottom:1px solid var(--line-strong);margin-bottom:36px}
+.doc-head-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px}
 .doc-kicker{margin:0 0 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .doc-head h2{margin:0;font-size:clamp(1.7rem,3vw,2.3rem);line-height:1.15;letter-spacing:-.02em;font-weight:600;max-width:24ch}
+.complete-btn{
+  appearance:none;display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;
+  font-family:var(--sans);font-size:11.5px;font-weight:500;color:var(--muted);
+  background:rgba(255,253,248,.5);border:1px solid var(--line-strong);border-radius:999px;
+  padding:7px 12px;cursor:pointer;transition:.18s ease;white-space:nowrap;margin-top:2px;
+}
+.complete-btn:hover{color:var(--ink);border-color:var(--muted)}
+.complete-btn svg{width:14px;height:14px}
+.complete-btn[aria-pressed="true"]{color:var(--green);border-color:rgba(62,107,80,.38);background:var(--green-wash)}
+.complete-btn[aria-pressed="true"] svg{stroke-width:2.4}
+.doc.is-complete .doc-kicker{color:var(--green)}
+.doc-tab.is-complete .tab-label::after{content:"✓";margin-left:6px;font-size:10px;font-weight:600;color:var(--green)}
 .doc-meta{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:16px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .doc-meta > * + *::before{content:"·";margin-right:10px;color:var(--line-strong)}
 .doc-note{margin:14px 0 0;font-family:var(--sans);font-size:12px;color:var(--muted)}
@@ -628,6 +656,7 @@ body.split-view .pdf-pane{
   .round-row{padding:7px 0 6px;gap:8px}
   .round-btn,.round-current{font-size:9px;padding:4px 8px}
   .view-switch button{padding:4px 7px;font-size:8.5px}
+  .round-progress{display:none}
   .tab-label .full{display:none}
   .tab-label .mini{display:inline}
   .print-btn span{display:none}
@@ -646,7 +675,7 @@ body.split-view .pdf-pane{
 }
 @media print{
   body{background:#fff;font-size:11pt}
-  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot{display:none!important}
+  body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot,.complete-btn{display:none!important}
   .pdf-pane{display:none!important}
   .wrap{width:100%}
   .masthead{padding:0 0 16px}
@@ -673,6 +702,15 @@ const pdfName = document.getElementById('pdfName');
 const pdfKicker = document.getElementById('pdfKicker');
 const pdfOpen = document.getElementById('pdfOpen');
 const viewButtons = Array.from(document.querySelectorAll('.view-switch button'));
+const roundProgress = document.getElementById('roundProgress');
+const COMPLETE_KEY = "etsf25-feedback-complete-v1";
+let completed = {};
+try {
+  const parsed = JSON.parse(localStorage.getItem(COMPLETE_KEY) || "{}");
+  completed = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+} catch (e) {
+  completed = {};
+}
 
 function activeDoc() {
   return document.querySelector('.doc:not([hidden])');
@@ -732,6 +770,38 @@ function updatePdf() {
   }
 }
 
+function saveCompletion() {
+  try { localStorage.setItem(COMPLETE_KEY, JSON.stringify(completed)); } catch (e) {}
+}
+
+function updateRoundProgress() {
+  if (!roundProgress) return;
+  const doc = activeDoc();
+  if (!doc) return;
+  const roundDocs = docs.filter(item => item.dataset.round === doc.dataset.round);
+  const done = roundDocs.filter(item => completed[item.dataset.doc] === true).length;
+  roundProgress.textContent = done + " / " + roundDocs.length + " complete";
+  roundProgress.classList.toggle("all-done", roundDocs.length > 0 && done === roundDocs.length);
+}
+
+function applyCompletion() {
+  docs.forEach(item => {
+    const done = completed[item.dataset.doc] === true;
+    item.classList.toggle("is-complete", done);
+    const button = item.querySelector(".complete-btn");
+    if (button) {
+      button.setAttribute("aria-pressed", String(done));
+      button.setAttribute("aria-label", done ? "Mark feedback as incomplete" : "Mark feedback as complete");
+      const label = button.querySelector(".complete-label");
+      if (label) label.textContent = done ? "Completed" : "Mark complete";
+    }
+  });
+  tabs.forEach(tab => {
+    tab.classList.toggle("is-complete", completed[tab.dataset.target] === true);
+  });
+  updateRoundProgress();
+}
+
 function syncView() {
   const mode = document.body.classList.contains("split-view") ? "split" : "reader";
   viewButtons.forEach(button => {
@@ -760,6 +830,7 @@ function setActiveDoc(slug, { scroll = false } = {}) {
   docs.forEach(item => { item.hidden = item !== doc; });
   tocLists.forEach(list => { list.hidden = list.dataset.doc !== doc.dataset.doc; });
   updatePdf();
+  updateRoundProgress();
   if (search.value) { search.value = ''; }
   resultCount.textContent = '';
   applySearch();
@@ -795,6 +866,29 @@ roundButtons.forEach(button => {
     const first = tabs.find(tab => tab.dataset.round === button.dataset.round);
     if (first) setActiveDoc(first.dataset.target, { scroll: true });
   });
+});
+
+docs.forEach(item => {
+  const button = item.querySelector(".complete-btn");
+  if (!button) return;
+  button.addEventListener("click", () => {
+    const slug = item.dataset.doc;
+    if (completed[slug]) delete completed[slug];
+    else completed[slug] = true;
+    saveCompletion();
+    applyCompletion();
+  });
+});
+
+window.addEventListener("storage", event => {
+  if (event.key !== COMPLETE_KEY) return;
+  try {
+    const parsed = JSON.parse(event.newValue || "{}");
+    completed = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch (e) {
+    completed = {};
+  }
+  applyCompletion();
 });
 
 viewButtons.forEach(button => {
@@ -840,6 +934,7 @@ document.querySelector('.print-btn').addEventListener('click', () => window.prin
 const initial = (location.hash || '').replace('#', '');
 const initialTab = tabs.find(tab => tab.dataset.target === initial);
 setActiveDoc(initialTab ? initial : tabs[0].dataset.target);
+applyCompletion();
 syncView();
 onScroll();
 """
@@ -1009,8 +1104,13 @@ def main():
     <div class="round-row">
       """
         + round_switcher
+        + """
+      <div class="round-actions">
+        <span class="round-progress" id="roundProgress" aria-live="polite"></span>
+        """
         + view_switch
         + """
+      </div>
     </div>
     <div class="tabbar-inner">
       <div class="tabs" role="tablist" aria-label="Reviews in this round">
