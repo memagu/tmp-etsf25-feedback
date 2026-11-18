@@ -107,6 +107,18 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 .round-btn:hover{color:var(--ink);border-color:var(--muted)}
 .round-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 .round-current{background:var(--ink);border:1px solid var(--ink);color:var(--paper)}
+.view-switch{
+  margin-left:auto;display:flex;align-items:center;flex:0 0 auto;
+  border:1px solid var(--line-strong);border-radius:999px;overflow:hidden;
+  background:rgba(255,253,248,.5);
+}
+.view-switch button{
+  appearance:none;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);padding:5px 10px;transition:.16s ease;
+}
+.view-switch button:hover{color:var(--ink)}
+.view-switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto}
 .tabs::-webkit-scrollbar{display:none}
 .doc-tab{
@@ -138,6 +150,35 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 .layout{display:grid;grid-template-columns:236px minmax(0,1fr);gap:clamp(32px,5vw,64px);padding:46px 0 80px;align-items:start}
 main{max-width:760px;width:100%}
 .sidebar{position:sticky;top:84px;display:flex;flex-direction:column;gap:26px}
+
+/* Split view with the reviewed draft */
+.pdf-pane{display:none}
+body.split-view .layout{grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:22px}
+body.split-view .sidebar{display:none}
+body.split-view main{max-width:none}
+body.split-view .pdf-pane{
+  display:flex;flex-direction:column;position:sticky;top:94px;
+  height:calc(100vh - 112px);min-height:520px;
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:var(--card);box-shadow:var(--shadow);
+}
+.pdf-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,253,248,.95),rgba(255,253,248,.55));
+}
+.pdf-kicker{margin:0 0 2px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pdf-name{margin:0;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdf-open{
+  display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;
+  font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--accent-deep);
+  text-decoration:none;white-space:nowrap;padding:5px 8px;border-radius:999px;
+  border:1px solid rgba(166,63,39,.28);transition:.16s ease;
+}
+.pdf-open:hover{background:var(--accent-wash)}
+.pdf-open svg{width:11px;height:11px}
+.pdf-frame{flex:1;min-height:0;background:#e6dfd2}
+.pdf-frame iframe{display:block;width:100%;height:100%;border:0}
 .search{
   display:flex;align-items:center;gap:9px;background:var(--card);
   border:1px solid var(--line-strong);border-radius:9px;padding:9px 11px;
@@ -247,6 +288,9 @@ main{max-width:760px;width:100%}
 
 @media (max-width:900px){
   .layout{grid-template-columns:1fr;gap:30px;padding-top:32px}
+  body.split-view .layout{grid-template-columns:1fr;gap:22px}
+  body.split-view .pdf-pane{position:static;height:68vh;min-height:430px}
+  body.split-view main{max-width:760px}
   .sidebar{position:static;display:grid;grid-template-columns:1fr 1fr;gap:18px 26px;align-items:start}
   .search{grid-column:1/-1}
   .result-count{margin:0;grid-column:1/-1}
@@ -265,6 +309,7 @@ main{max-width:760px;width:100%}
   .doc-tab .tab-count{display:none}
   .round-row{padding:7px 0 6px;gap:8px}
   .round-btn,.round-current{font-size:9px;padding:4px 8px}
+  .view-switch button{padding:4px 7px;font-size:8.5px}
   .tab-label .full{display:none}
   .tab-label .mini{display:inline}
   .print-btn span{display:none}
@@ -284,6 +329,7 @@ main{max-width:760px;width:100%}
 @media print{
   body{background:#fff;font-size:11pt}
   body::before,.tabbar,.sidebar,.progress,.to-top,.masthead .chips,.masthead .lede,.doc-note,.foot{display:none!important}
+  .pdf-pane{display:none!important}
   .wrap{width:100%}
   .masthead{padding:0 0 16px}
   .layout{display:block;padding:0}
@@ -295,7 +341,8 @@ main{max-width:760px;width:100%}
 }
 </style>
 </head>
-<body>
+<body class="split-view">
+<script>if(window.matchMedia("(max-width: 900px)").matches)document.body.classList.remove("split-view");</script>
 <div class="progress" id="progress"></div>
 <header class="masthead">
   <div class="wrap">
@@ -314,7 +361,7 @@ main{max-width:760px;width:100%}
 <div class="tabbar">
   <div class="wrap">
     <div class="round-row">
-      <span class="round-label">Review round</span><div class="rounds" role="group" aria-label="Review rounds"><span class="round-current">Draft 1</span></div>
+      <span class="round-label">Review round</span><div class="rounds" role="group" aria-label="Review rounds"><span class="round-current">Draft 1</span></div><div class="view-switch" role="group" aria-label="View mode"><button type="button" data-view="reader" aria-pressed="false">Read</button><button type="button" data-view="split" aria-pressed="true">Compare</button></div>
     </div>
     <div class="tabbar-inner">
       <div class="tabs" role="tablist" aria-label="Reviews in this round">
@@ -358,8 +405,22 @@ main{max-width:760px;width:100%}
     </div>
     <p class="side-note">Generated from the original <code>.txt</code> files. Text is unchanged — only the presentation is new.</p>
   </aside>
+  <aside class="pdf-pane" id="pdfPane" aria-label="Draft PDF">
+    <div class="pdf-head">
+      <div>
+        <p class="pdf-kicker" id="pdfKicker">Draft 1 · source document</p>
+        <p class="pdf-name" id="pdfName">report.pdf</p>
+      </div>
+      <a class="pdf-open" id="pdfOpen" href="reviews/draft-1/report.pdf" target="_blank" rel="noopener">Open PDF
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7"/><path d="M21 3 10 14"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+      </a>
+    </div>
+    <div class="pdf-frame">
+      <iframe id="pdfFrame" title="Draft PDF" src="reviews/draft-1/report.pdf#view=FitH"></iframe>
+    </div>
+  </aside>
   <main>
-    <section class="doc" id="doc-draft-1-johannes-persson" data-doc="draft-1-johannes-persson" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-johannes-persson" hidden>
+    <section class="doc" id="doc-draft-1-johannes-persson" data-doc="draft-1-johannes-persson" data-round="draft-1" data-round-title="Draft 1" data-pdf="reviews/draft-1/report.pdf" data-pdf-name="report.pdf" role="tabpanel" aria-labelledby="tab-draft-1-johannes-persson" hidden>
 <div class="doc-head">
 <p class="doc-kicker">Draft 1 · Document 01</p>
 <h2>Peer review by Johannes Persson</h2>
@@ -535,7 +596,7 @@ main{max-width:760px;width:100%}
 </article>
 </section>
 </section>
-<section class="doc" id="doc-draft-1-maxwell-kav" data-doc="draft-1-maxwell-kav" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-maxwell-kav" hidden>
+<section class="doc" id="doc-draft-1-maxwell-kav" data-doc="draft-1-maxwell-kav" data-round="draft-1" data-round-title="Draft 1" data-pdf="reviews/draft-1/report.pdf" data-pdf-name="report.pdf" role="tabpanel" aria-labelledby="tab-draft-1-maxwell-kav" hidden>
 <div class="doc-head">
 <p class="doc-kicker">Draft 1 · Document 02</p>
 <h2>Peer review by Maxwell Kav</h2>
@@ -711,7 +772,7 @@ main{max-width:760px;width:100%}
 </article>
 </section>
 </section>
-<section class="doc" id="doc-draft-1-valdemar-rasmusson" data-doc="draft-1-valdemar-rasmusson" data-round="draft-1" role="tabpanel" aria-labelledby="tab-draft-1-valdemar-rasmusson" hidden>
+<section class="doc" id="doc-draft-1-valdemar-rasmusson" data-doc="draft-1-valdemar-rasmusson" data-round="draft-1" data-round-title="Draft 1" data-pdf="reviews/draft-1/report.pdf" data-pdf-name="report.pdf" role="tabpanel" aria-labelledby="tab-draft-1-valdemar-rasmusson" hidden>
 <div class="doc-head">
 <p class="doc-kicker">Draft 1 · Document 03</p>
 <h2>Peer review by Valdemar Rasmusson</h2>
@@ -901,6 +962,11 @@ const search = document.getElementById('search');
 const resultCount = document.getElementById('resultCount');
 const progress = document.getElementById('progress');
 const toTop = document.querySelector('.to-top');
+const pdfFrame = document.getElementById('pdfFrame');
+const pdfName = document.getElementById('pdfName');
+const pdfKicker = document.getElementById('pdfKicker');
+const pdfOpen = document.getElementById('pdfOpen');
+const viewButtons = Array.from(document.querySelectorAll('.view-switch button'));
 
 function activeDoc() {
   return document.querySelector('.doc:not([hidden])');
@@ -933,6 +999,46 @@ function applySearch() {
   updateCount();
 }
 
+function updatePdf() {
+  if (!pdfFrame) return;
+  const doc = activeDoc();
+  if (!doc) return;
+  const pdf = doc.dataset.pdf || "";
+  if (pdf) {
+    if (pdfFrame.dataset.current !== pdf) {
+      pdfFrame.dataset.current = pdf;
+      pdfFrame.src = pdf + "#view=FitH";
+    }
+    if (pdfName) pdfName.textContent = doc.dataset.pdfName || "Draft PDF";
+    if (pdfKicker) pdfKicker.textContent = (doc.dataset.roundTitle ? doc.dataset.roundTitle + " · " : "") + "source document";
+    if (pdfOpen) {
+      pdfOpen.href = pdf;
+      pdfOpen.hidden = false;
+    }
+  } else {
+    if (pdfFrame.dataset.current !== "") {
+      pdfFrame.dataset.current = "";
+      pdfFrame.src = "about:blank";
+    }
+    if (pdfName) pdfName.textContent = "No draft attached";
+    if (pdfKicker) pdfKicker.textContent = "Source document";
+    if (pdfOpen) pdfOpen.hidden = true;
+  }
+}
+
+function syncView() {
+  const mode = document.body.classList.contains("split-view") ? "split" : "reader";
+  viewButtons.forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.view === mode));
+  });
+}
+
+function setView(mode) {
+  document.body.classList.toggle("split-view", mode === "split");
+  syncView();
+  if (mode === "split") updatePdf();
+}
+
 function setActiveDoc(slug, { scroll = false } = {}) {
   const doc = docs.find(item => item.dataset.doc === slug) || docs[0];
   if (!doc) return;
@@ -947,6 +1053,7 @@ function setActiveDoc(slug, { scroll = false } = {}) {
   });
   docs.forEach(item => { item.hidden = item !== doc; });
   tocLists.forEach(list => { list.hidden = list.dataset.doc !== doc.dataset.doc; });
+  updatePdf();
   if (search.value) { search.value = ''; }
   resultCount.textContent = '';
   applySearch();
@@ -982,6 +1089,10 @@ roundButtons.forEach(button => {
     const first = tabs.find(tab => tab.dataset.round === button.dataset.round);
     if (first) setActiveDoc(first.dataset.target, { scroll: true });
   });
+});
+
+viewButtons.forEach(button => {
+  button.addEventListener('click', () => setView(button.dataset.view));
 });
 
 search.addEventListener('input', applySearch);
@@ -1023,6 +1134,7 @@ document.querySelector('.print-btn').addEventListener('click', () => window.prin
 const initial = (location.hash || '').replace('#', '');
 const initialTab = tabs.find(tab => tab.dataset.target === initial);
 setActiveDoc(initialTab ? initial : tabs[0].dataset.target);
+syncView();
 onScroll();
 </script>
 </body>

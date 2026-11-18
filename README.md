@@ -11,14 +11,15 @@ A single-page, self-contained reading edition of three plain-text peer reviews f
 | `index.html` | The generated site — complete, self-contained, and ready to serve |
 | `favicon.svg` | Site icon |
 | `build_page.py` | Generator that turns the review files into `index.html` |
+| `reviews/draft-1/report.pdf` | The reviewed draft, shown beside the comments |
 | `reviews/draft-1/johannes-persson.txt` | Peer review by Johannes Persson |
 | `reviews/draft-1/maxwell-kav.txt` | Peer review by Maxwell Kav |
 | `reviews/draft-1/valdemar-rasmusson.txt` | Peer review by Valdemar Rasmusson |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is |
 
-The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling.
+The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling. The reviewed draft is displayed in a split view beside the comments.
 
-Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each `.txt` file inside becomes a reviewer tab, named from its filename and ordered alphabetically. The active round is shown above the reviewer tabs; when more than one round exists, the round buttons switch between them.
+Review rounds live in subdirectories of `reviews/` (for example `reviews/draft-1/`, `reviews/draft-2/`). Each round folder contains the reviewed draft as `report.pdf` plus one `.txt` file per reviewer. Each `.txt` file becomes a reviewer tab, named from its filename and ordered alphabetically. The active round is shown above the reviewer tabs; when more than one round exists, the round buttons switch between them.
 
 ## Regenerate the page
 
@@ -58,4 +59,4 @@ No workflow or build action is needed: `index.html` is committed and ready to se
 
 - Each review opens with a short overall comment, separated from the numbered criteria by `---`. The generator renders that opening as the summary block at the top of the document.
 - All document text is presented unchanged. Only the layout, typography, and navigation were added.
-- To add another round, create `reviews/draft-2/` and drop the reviewer `.txt` files inside, then run `python3 build_page.py`.
+- To add another round, create `reviews/draft-2/`, add `report.pdf` and the reviewer `.txt` files, then run `python3 build_page.py`.
