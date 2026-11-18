@@ -1,0 +1,54 @@
+Great first draft.
+---
+INSTRUCTIONS:
+- Skim read the assigned report
+- Consider the criteria & questions below
+- Write constructive assessment and feedback for each question, e.g. what is good, what is missing / hard to understand, what can be improved.
+
+OVERALL
+1. General impression of report: professional, organised, confidence inspiring etc?
+My overall impression of the report is that the team spent a lot of time and effort on this first draft. The report is professional and well written.
+
+2. Language: clarity, ease of understanding, e.g. what is the problem & the solution?
+The language is very professional, clear and straight to the point. I found it easy to understand their idea and business model. I did however find it a bit difficult to understand the meaning of "private event" in the report, as it sometimes seemed to be referring to events hosted by private consumers, and sometimes on events that require invitation.
+
+BUSINESS MODEL
+3. Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?
+The description of the business model describes the pains that customers face with the current solutions, and I found it easy to understand how the product solves these issues. The MOM test found that other students experienced the same problems with the current solutions, motivating the need for a new solution.
+
+4. Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions? 
+As the report discussed, there are multiple other services that are meant for managing events, however, there are not really any dedicated services that only focus on events.
+
+5. Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?
+The solution is superior to the ones already on the market because it is focused. I think that the knowledge of the local event-hosting scene is a major advantage of the team that is hard to copy.
+
+6. How will money be earned on the product/service? Is the revenue model realistic?
+The service will make money from event planners that want to promote their events on the platform, from fees when renting venues and from advertisements. I think that it is realistic to expect a fee from renting venues, and advertisements seem like a good idea if there are many users. But I don't think it is very realistic to expect people to pay for promotion of events if they cant sell tickets on the platform.
+
+7. How well does the business model fit the product/service?
+The business model fits the service well.
+
+8. Is it clear where venture capital will come from? Realistic?
+Venture capital is not discussed in the report.
+
+9. Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?
+The team makes a great case for why they are suited for this venture. I especially think that their knowledge of the market and their connections are beneficial for this venture. 
+
+10. What are the chances that this team will succeed?
+The chances are great.
+
+MARKET ANALYSIS
+11. Is it clear which customers that are likely to buy the product/service?
+Yes, it is clear that the focus is on students, event hosters and venue owners.
+
+12. What kind of competitors have been identified? Can you think of other and/or more relevant competitors?
+The competitors are facebook and some ticket sale sites. I cant think of any competitor services that ive used except for facebook.
+
+13. Consider the motivation of the product-market fit. What aspects need to be validated through prototyping? 
+I think it would be worth prototyping the invite system to make sure that people would prefer it to facebook.
+
+14. Is the initially targeted market (early adopters) realistic?
+It's very realistic.
+
+15. How trustworthy is the market channel (distribution, customer reach out)?
+Word-by-mouth seems like a good market channel since the team has a large network in the initially targeted market.
