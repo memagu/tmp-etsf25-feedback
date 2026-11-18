@@ -377,7 +377,7 @@ body::before{
 a{color:var(--accent-deep)}
 kbd{font-family:var(--mono);font-size:.82em;background:rgba(32,28,22,.06);padding:.14em .42em;border-radius:4px}
 code{font-family:var(--mono);font-size:.82em;background:rgba(32,28,22,.06);padding:.14em .42em;border-radius:4px}
-.wrap{width:min(1060px, calc(100% - 56px));margin-inline:auto;position:relative;z-index:1}
+.wrap{width:min(1880px, calc(100% - clamp(32px, 4vw, 72px)));margin-inline:auto;position:relative;z-index:1}
 .progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--accent));z-index:60;transition:width .1s linear}
 
 /* Masthead */
@@ -465,13 +465,13 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 .print-btn svg{width:13px;height:13px}
 
 /* Layout */
-.layout{display:grid;grid-template-columns:236px minmax(0,1fr);gap:clamp(32px,5vw,64px);padding:46px 0 80px;align-items:start}
-main{max-width:760px;width:100%}
+.layout{display:grid;grid-template-columns:236px minmax(0,820px);justify-content:center;gap:clamp(32px,5vw,64px);padding:46px 0 80px;align-items:start}
+main{max-width:820px;width:100%}
 .sidebar{position:sticky;top:84px;display:flex;flex-direction:column;gap:26px}
 
 /* Split view with the reviewed draft */
 .pdf-pane{display:none}
-body.split-view .layout{grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:22px}
+body.split-view .layout{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);justify-content:stretch;gap:28px}
 body.split-view .sidebar{display:none}
 body.split-view main{max-width:none}
 body.split-view .pdf-pane{
