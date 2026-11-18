@@ -1,0 +1,54 @@
+En väl formulerad rapport med en kul idé. Speciellt Mom-testet var väl utfört. Kan funderas mer på customer-segment och om en öppen event-platform för bara studenter är the way to go!
+---
+INSTRUCTIONS:
+- Skim read the assigned report
+- Consider the criteria & questions below
+- Write constructive assessment and feedback for each question, e.g. what is good, what is missing / hard to understand, what can be improved.
+
+OVERALL
+1. General impression of report: professional, organised, confidence inspiring etc?
+The report is easy to read, well organized and is very inspiring. It gives a feel of understanding the problem.
+
+2. Language: clarity, ease of understanding, e.g. what is the problem & the solution?
+The language is easy to understand, and the problem is presented directly. The solution, of "attacking the experienced friction" is clear. Making a product easier to use.
+
+BUSINESS MODEL
+3. Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?
+The customer perspective is explored through the problem, using personal experience in the matter. The Mom-test appendix is good, and shows exactly the execution. 
+
+4. Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions? 
+The idea is a kind of combination of existing products, boiling them down to a simple product. It should have the concept of Facebook events, but only that. 
+
+5. Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?
+If the solution becomes widespread, it may well be a competitive product. Elimination of the hassles of the other apps could prove this product superior, which might help attract the users. The business model is not super complicated, but getting a head start will be very important.
+
+6. How will money be earned on the product/service? Is the revenue model realistic?
+The money will come from advertisement from event holders, also from venues when a reservation is made through the app. The model is realistic, but might not generate revenue in a while, a problem which could bee explored further.
+
+7. How well does the business model fit the product/service?
+The business model is a good fit for the product. However one thought is that the market will be really hard to enter, and a strategy for this would give more confidence in the product. Also, if the application is used _only_ for students, all events with any number of non-students (parents, friends, ex-students etc.) would be hard to host in this application, which could be a limitation. Perhaps the business model could explore how to handle this case, either with, or without expanding the current customer segment.
+
+8. Is it clear where venture capital will come from? Realistic?
+There is no mention of venture capital.
+
+9. Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?
+The team is introduced, also a good case for which experiences to get external help on. It would be interesting to see if any team members have "extra" skills beyond computer science!
+
+10. What are the chances that this team will succeed?
+I believe in you guys :) I am personally aware of the problem, and think that the product is a reasonable fir for the market. The case seems well thought out.
+
+MARKET ANALYSIS
+11. Is it clear which customers that are likely to buy the product/service?
+Yes, students. Although exactly which students are likely to be early adopters could be explored further. 
+
+12. What kind of competitors have been identified? Can you think of other and/or more relevant competitors?
+I think most of the competitors have been mentioned, global and more local. I could not find any more competitors that were mentioned. The problem with Facebook is mentioned, perhaps one could reason more about the problem of other platforms as well, and why these are mentioned as competitors.
+
+13. Consider the motivation of the product-market fit. What aspects need to be validated through prototyping? 
+How friction-free the product is - this is the main selling case of this product and needs to work well. Also user adoption, how easy it is to start using the app (make an account and find events for example) since this will be a major roadblock when starting up.
+
+14. Is the initially targeted market (early adopters) realistic?
+Yes, students in the organization which the founders are connected to is a realistic starting point.
+
+15. How trustworthy is the market channel (distribution, customer reach out)?
+It is as trustworthy as you think your friend is. Which might vary but is a reasonable way of spreading a social media application. Perhaps the chances of a collaboration with the university could be explored? This could be a trustworthy information channel in that case.
