@@ -1,0 +1,69 @@
+Good job with the report, it looks nice and professional! I like the idea you have chosen, and think it could be quite useful if it became a reality. See the txt file for more detailed thoughts.
+---
+INSTRUCTIONS:
+- Skim read the assigned report
+- Consider the criteria & questions below
+- Write constructive assessment and feedback for each question, e.g. what is good, what is missing / hard to understand, what can be improved.
+
+OVERALL
+1. General impression of report: professional, organised, confidence inspiring etc?
+
+I am definitely impressed by this report, I find it professional and well structured, and you certainly have a lot of confidence in your idea which you convey to the reader quite well. 
+
+2. Language: clarity, ease of understanding, e.g. what is the problem & the solution?
+
+This report is easy to understand and it is clear what the problem and solution is. The language is professional while still being easy to understand, and I could barely find any spelling or grammar mistakes. You use the word "as" quite a lot which makes certain sections not flow as nicely as they might have with a more varied language, but that is really all I could find to complain about, well done. 
+
+BUSINESS MODEL
+3. Consider the description of the business model. Does it describe the user/customer perspective? How is MOM test used to motivate the targeted problem?
+
+It does describe the user perspective in terms of what the current problem is as well as how the product would solve this problem for the users. The MOM test is used to motivate that the problem exists, although this section could be expanded a bit to get a more nuanced view of how different people experienced the problem. 
+
+4. Consider the novelty of the business idea. Is the product/service new or are you aware of comparable solutions? 
+
+As you said yourself, the service itself is not new but focusing exclusively on this service is, I am not aware of any other solution that does this at least. 
+
+5. Consider the competitiveness of the product/service. How superior is the solution compared to other alternatives? How easy is it for others to copy the business model (and thereby further increase competition)?
+
+I don't have much experience with event planning so it is hard to judge, but I think this solution is superior and simpler to use. The question is if it is superior enough to make people switch from well established platforms like facebook that have the advantage of already having a large customer base that event organisers can reach. The biggest challenge for you will be getting your first customers, because event organisers have little reason to use it if they can't reach anyone on it and event goers have little reason to use it if there is barely any events hosted, but I think your idea of hosting events on it yourselves and encouraging your friends to sign up for those events might eventually pay off and get you the user base you need. If you manage this I think you are actually in a very good spot, since those student connections are so crucial to getting it up and running it will be hard for others to copy you and compete.
+
+6. How will money be earned on the product/service? Is the revenue model realistic?
+
+Money will be earned when the event organisers pay to advertise their events, and when the venues pay a small fee for getting booked. I am not sure if these are events that people have to pay to come to or if they are completely free, but if they are free then I think it is risky to ask for payment when publishing the event on facebook instead would be completely free. This is especially a huge concern early on when the user base is small, because you only get value from the money you spend on advertising if you can reach a large amount of people. If you do plan on hosting paid events as well then you could also facilitate the selling of tickets and simply take a small cut of the profit made from those sales. Maybe this would be a more realistic revenue model and be easier for event organisers to accept since they don't have to pay you anything before they have already started to make money themselves. You already do this with the venues, taking a small fee from them when they have already secured the presumably much larger booking fee feels a lot safer and I think maybe you should consider doing the same with the event hosts. Then the problem becomes that you don't really have a way to make money from free events, but maybe that is ok if it helps you grow the platform enough to eventually earn money from the paid events or from ads. 
+
+7. How well does the business model fit the product/service?
+
+Apart from the concerns I had about the revenue model I think the business model fits the product well, the problem is well defined and you have chosen your customer segments well. Whether it delivers on the unique value proposition is hard to judge without seeing the final product, but it certainly has the potential to. It would be nice if you included some key metrics that lets you measure how well your business is doing. 
+
+8. Is it clear where venture capital will come from? Realistic?
+
+No, as far as I can tell this is not mentioned anywhere so it is hard to comment on. We also missed this in our own report though so I definitely understand how that can happen :)
+
+9. Consider the team behind the business. How well is the competence and strengths of the team described? Are any vital competences missing (that ought to be recruited)? How well is the extent and type of contribution described for each team member (number of hours, type of activities and contributions)?
+
+The team seems well suited to the task given your developer skills and excellent domain knowledge of the problem you are trying to solve, although you just have a general description of the whole team so if any of you have more specific talents it would be nice to mention those. You correctly identified weaknesses in marketing and business management where you should probably get some advice from experts. The contributions are well outlined at the end along with the number of hours each person worked. 
+
+10. What are the chances that this team will succeed?
+
+Pretty high I would say, the idea is solid and the team seems to have the skills and the enthusiasm necessary to make it a reality. There are of course some obstacles and difficulties to work through but you seem to be aware of most of them already and have plans for solving them. 
+
+MARKET ANALYSIS
+11. Is it clear which customers that are likely to buy the product/service?
+
+Yes, this is very clearly targeted at students. 
+
+12. What kind of competitors have been identified? Can you think of other and/or more relevant competitors?
+
+Facebook is the big one, but also ticket vendors like Orbi, Hitract, Stuk and Ticketmaster. I can not think of any more relevant competitors. 
+
+13. Consider the motivation of the product-market fit. What aspects need to be validated through prototyping? 
+
+This was pretty short in your report and could be expanded for the next draft I think. A big thing you need to validate is how willing students are to leave behind the apps they are comfortable and try something new just to sign up for an event. Consider making the signup process simple, and test if it makes a difference if your solution is an app or a webpage that doesn't require a download. You also need to validate that the process of managing events and signing up for them is indeed simple. 
+
+14. Is the initially targeted market (early adopters) realistic?
+
+No, I think having all students at Lund university is way too broad for your early adopters, it is a very diverse group and far from all of them would be interested in this sort of thing. Since you rely heavily on word of mouth and personal connections you should think of the people you yourselves can easily reach and try to define them as your early adopters. 
+
+15. How trustworthy is the market channel (distribution, customer reach out)?
+
+I think it is pretty trustworthy and realistic, as a small startup it makes sense to rely on word of mouth and it sounds like it could still have a lot of outreach. I am not sure about whether the student organisations would be interested in promoting you since they probably already use some of your competitors like orbi or stuk, but you can probably judge this better than I can. 
