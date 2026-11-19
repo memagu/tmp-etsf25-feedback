@@ -1,8 +1,10 @@
 # ETSF25 peer reviews
 
-A single-page, self-contained reading edition of three plain-text peer reviews for the ETSF25 project draft. Built as a static site with no dependencies or build step required to serve it.
+A single-page, self-contained reading edition of the peer reviews for the ETSF25 project draft. Built as a static site with no dependencies or build step required to serve it.
 
-**Live preview:** run `python3 -m http.server 8080` and open <http://localhost:8080/>.
+**Live site:** <https://feedback.memagu.com/>
+
+**Local preview:** run `python3 -m http.server 8080` and open <http://localhost:8080/>.
 
 ## What’s inside
 
@@ -12,9 +14,13 @@ A single-page, self-contained reading edition of three plain-text peer reviews f
 | `favicon.svg` | Site icon |
 | `build_page.py` | Generator that turns the review files into `index.html` |
 | `reviews/draft-1/report.pdf` | The reviewed draft, shown beside the comments |
+| `reviews/draft-1/aksel-sjögärd.txt` | Peer review by Aksel Sjögärd |
+| `reviews/draft-1/alexander-sörensen-ristinmaa.txt` | Peer review by Alexander Sörensen Ristinmaa |
 | `reviews/draft-1/johannes-persson.txt` | Peer review by Johannes Persson |
 | `reviews/draft-1/maxwell-kav.txt` | Peer review by Maxwell Kav |
 | `reviews/draft-1/valdemar-rasmusson.txt` | Peer review by Valdemar Rasmusson |
+| `reviews/draft-1/viktor-lindström.txt` | Peer review by Viktor Lindström |
+| `AGENTS.md` | Repository context and conventions for coding agents |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is |
 
 The page includes tabs for each file, section navigation, full-text search (`/`), a reading-progress bar, and print / PDF styling. The reviewed draft is displayed in a split view beside the comments. Click anywhere on a question card (or the “Click to complete” hint) to mark it handled; it gets a green tint, and clicking again reopens it. A review is marked complete automatically once all its questions are handled. Per-question state is stored in the browser (`localStorage`) on that device, with a per-round progress count.
@@ -33,27 +39,22 @@ If two reviews in the same round have identical answers, the build prints a warn
 
 The script uses only the Python standard library. The generated `index.html` embeds all CSS and JavaScript, so it also works when opened directly from disk.
 
-## Publish with GitHub Pages
+## Deployment
 
-1. Create an empty repository on GitHub (do not initialise it with a README).
-2. Connect this local repo and push:
+The site is published from the **`main`** branch (`/` root) with GitHub Pages at:
 
-   ```sh
-   git remote add origin git@github.com:<username>/<repo>.git
-   git push -u origin main
-   ```
+**https://feedback.memagu.com/**
 
-3. In the GitHub repository, open **Settings → Pages**.
-4. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-5. Choose branch **`main`** and folder **`/ (root)`**, then save.
+The custom domain is configured through `CNAME` (`feedback.memagu.com`). After changing a review or the generator:
 
-GitHub will publish the site at:
-
-```
-https://<username>.github.io/<repo>/
+```sh
+python3 build_page.py
+git add -A
+git commit -m "Update reviews"
+git push origin main
 ```
 
-No workflow or build action is needed: `index.html` is committed and ready to serve.
+GitHub Pages rebuilds automatically. No GitHub Actions workflow is required, and `index.html` is committed and ready to serve.
 
 ## Notes
 
